@@ -10,6 +10,7 @@ duoAlertOxide is a programatic, function-oriented re-implimentation of [duoAlert
 duoAlertOxide uses discord webhooks to send a message when a followed user extends or starts a streak based on their daily goal.
 
 <p>&nbsp;</p>
+
 ## how do i get this up and running?
 
 #### what does this depend on?
@@ -20,7 +21,7 @@ duoAlertOxide uses discord webhooks to send a message when a followed user exten
 - run `cargo build` to produce a runnable executable (default path `target/debug/<executable>`)
 - run the aforementioned executable!*
 
-<sub>* may need additional setup. see [how do i configure this?](#how_do_i_configure_this) </sub>
+<sub>* may need additional setup. see [how do i configure this?](#how-do-i-configure-this) </sub>
 
 #### how do i configure this?
 
