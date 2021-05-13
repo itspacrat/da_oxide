@@ -1,7 +1,7 @@
 ![duoAlertOxide icon](https://cdn.discordapp.com/attachments/722708774967574618/841409538594570250/g1527.svg.png)
 
 ## duoAlertOxide
-<br /><b style="color: red;border-style:solid;border-radius:25px;padding: 40px;background-color:rgba(255,0,0,0.08);">:x: This branch is currently borked! use at your own risk, as nothing currently works.</b><br /><br />
+<br /><b>:x: This branch is currently borked! use at your own risk, as nothing currently works.</b><br /><br />
 
 #### what is it?
 duoAlertOxide is a programatic, function-oriented re-implimentation of [duoAlert](https://github.com/Seth-Johnson/duoAlert) by [Seth Johnson](https://gihtub.com/Seth-Johnson), in [rust](https://github.com/rust-lang/rust).
