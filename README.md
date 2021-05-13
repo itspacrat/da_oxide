@@ -14,7 +14,7 @@ duoAlertOxide uses discord webhooks to send a message when a followed user exten
 ## how do i get this up and running?
 
 #### what does this depend on?
-- [rust](https://github.com/rust-lang/rust) (which we'd hope is obvious)
+- [rust](https://github.com/rust-lang/rust) (which we'd hope is obvious by now)
 
 #### building from source
 - clone this repository and change into the directory it was cloned in (default duoAlertOxide)
