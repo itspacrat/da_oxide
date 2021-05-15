@@ -35,8 +35,14 @@ fn get_config(cfg_path: &str) {
         let config_r = read_to_string(cfg_path)
         .expect("Something went wrong whilst reading the config file");
 
-        // Print cfg
-        println!("{}",String::from(config_r))
+        let config_r: &str = &config_r;
+    
+        // parse string as json val
+        let config: serde_json::Value = serde_json::from_str(config_r)
+        .expect("JSON was not well-formatted");
+
+        // debug
+        println!("LOAD CONFIG: {}",String::from(config_r))
         
     }
 }
@@ -76,10 +82,24 @@ fn update_data() {
 }
 
 fn check_data() {
-    let config_r = read_to_string("streak_data.json")
-        .expect("Something went wrong whilst reading the config file");
-    //let previous = /*json load */(previous_r);
 
+    // Read streak data file to string
+    let previous_r = read_to_string("streak_data.json")
+        .expect("Something went wrong whilst reading the config file");
+
+    // make previous_r string literal by borrowing previous_r into itself
+    let previous_r: &str = &previous_r;
+    
+    /*/ debug
+    println!("LOAD PREVIOUS STREAK DATA: {}",String::from(previous_r));
+    */
+    
+    // parse string as json val
+    let previous: serde_json::Value = serde_json::from_str(previous_r)
+        .expect("JSON was not well-formatted");
+    
+    /* map json to struct? */
+    
 }
 
 fn update_data_file() {
@@ -91,20 +111,15 @@ fn update_data_file() {
 
 fn main() {
 
-    let config_path: &str = "config.json";
     /*
-    The config loader thing
+    // Todo: add argv/argc checking before
+    // setting vars for custom path
+    // support
     */
 
-    //this cfg block probably goes somewhere else after/within get_config()
-    /* let my_config = Config {
-        users: String::from(""),
-        webhook_url: String::from(""),
-        giphy_apikey: String::from(""),
-        giphy_rating: String::from(""),
-        username: String::from(""),
-        password: String::from("")
-    }; */
+    // define filepaths
+    let config_path: &str = "config.json";
+    let streak_data_path: &str = "streak_data.json";
 
     get_config(config_path);
 
@@ -117,10 +132,10 @@ fn main() {
     */
 
     // Todo: Impliment this check better
-    if !Path::new("streak_data.json").exists() {
+    if !Path::new(streak_data_path).exists() {
         
         // cry about nonexistent path
-        println!("failed to retrieve streak data");
+        println!("no data");
 
     } else {
         
