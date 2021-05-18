@@ -45,9 +45,11 @@ config.json
 	}
 ```
 <p>&nbsp;</p>
+
 ## do we have plans for cool stuff?
 #### planned features
 - multi-hook support
-<h6><sub><b><i>are we affiliated at all?</i></b></h6></sub><sub>
+<h6><b><i>are we affiliated at all?</i></b></h6>
+<sub>
 We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Duolingo, or any of its subsidiaries or its affiliates. The official Duolingo website can be found at http://duolingo.com. The name “Duolingo” as well as related names, marks, emblems and images are registered trademarks of Duolingo.
 </sub>
