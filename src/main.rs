@@ -4,15 +4,16 @@ extern crate serde_derive;
 extern crate reqwest;
 
 //use rand::Rng;
-use std::{error,fs::{File, read_to_string,}, path::Path, env };
-//use std::
-//use std::fs::{File, };
-//use std::io::Read;
-use serde::{Deserialize, Serialize};
-use serde_json::{Value, Map, Result};
+use std::{error,fs::{File, read_to_string}, path::Path};
+use std::collections::HashMap;
+use serde::{};
+use serde_json::{
+    Value,
+    Map,
+    Result
+};
 
 // Holds the config data
-// #[derive(Serialize, Deserialize, Debug)]
 struct Config {
     users: String,
     webhook_url: String,
@@ -22,12 +23,20 @@ struct Config {
     password: String
 }
 
-fn get_config(cfg_path: &str) {
+fn login(logindata: serde_json::Value) {
+    let logindata = logindata;//plceholder
+    
+    // maybe fix and turn this into json later
+
+    //let jwt: &str = "";
+}
+
+fn get_config(cfg_path: &str) -> Value {
 
     if !Path::new(cfg_path).exists() {
-        
         // cry about nonexistent path
         println!("failed to retrieve config file from {}", String::from(cfg_path));
+        panic!();
 
     } else {
         
@@ -41,8 +50,11 @@ fn get_config(cfg_path: &str) {
         let config: serde_json::Value = serde_json::from_str(config_r)
         .expect("JSON was not well-formatted");
 
-        // debug
+        /*/ debug
         println!("LOAD CONFIG: {}",String::from(config_r))
+        */
+
+        config
         
     }
 }
@@ -69,13 +81,7 @@ fn send_discord(r_msg: String, url :String, version: String, timestamp: String )
     }"#, r_msg, url, version, timestamp);
 }
 
-fn login(logindata: Config) {
-    let logindata = logindata;//plceholder
-    
-    // maybe fix and turn this into json later
 
-    //let jwt: &str = "";
-}
 
 fn update_data() {
 
@@ -98,7 +104,7 @@ fn check_data() {
     let previous: serde_json::Value = serde_json::from_str(previous_r)
         .expect("JSON was not well-formatted");
     
-    /* map json to struct? */
+    /* map json to hashmap? */
     
 }
 
@@ -121,30 +127,32 @@ fn main() {
     let config_path: &str = "config.json";
     let streak_data_path: &str = "streak_data.json";
 
-    get_config(config_path);
+    // Todo: Impliment these checks better ?????
+    if !Path::new(config_path).exists() {
+        // cry about nonexistent path
+        println!("no data");
+    } else {
+        // check the data in the file
+        let my_config: serde_json::Value = get_config(config_path);
+        login(my_config);
+        update_data();
 
-    //login(my_config);
-
-    update_data();
-
-    /*
+        /*
     get streak data
     */
 
-    // Todo: Impliment this check better
-    if !Path::new(streak_data_path).exists() {
-        
-        // cry about nonexistent path
-        println!("no data");
+        if !Path::new(streak_data_path).exists() {
+            // cry about nonexistent path
+            println!("no data");
+        } else {
+            // check the data in the file
+            check_data();
+        };
+        update_data_file();
+    };
 
-    } else {
-        
-        // check the data in the file
-        check_data();
+    
 
-    }
-
-    update_data_file();
     
 }
 
