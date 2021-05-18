@@ -4,8 +4,19 @@ extern crate serde_derive;
 extern crate reqwest;
 
 //use rand::Rng;
-use std::{/*error,*/fs::{File, read_to_string}, path::Path};
-use std::collections::HashMap;
+use std::{
+    /*error,*/
+    fs::{
+        File,
+        read_to_string
+    },
+    path::{
+        Path
+    },
+    collections::{
+        HashMap
+    }
+};
 //use serde::{};
 use serde_json::{
     Value,
