@@ -39,8 +39,8 @@ config.json
 	  "webhook_url": "<webhook_url>",
 	  "users": ["exampleUser"],
 	  "use_giphy": true,
-          "giphy_apikey": "YOUR_API_KEY_HERE",
-          "giphy_rating": "G"
+	  "giphy_apikey": "YOUR_API_KEY_HERE",
+	  "giphy_rating": "G"
 	}
 ```
 <p>&nbsp;</p>
