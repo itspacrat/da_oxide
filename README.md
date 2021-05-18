@@ -3,10 +3,10 @@
 ## duoAlertOxide
 <br /><b>:x: This branch is currently borked! use at your own risk, as nothing currently works.</b><br /><br />
 
-#### what is it?
+### what is it?
 duoAlertOxide is a programatic, function-oriented re-implimentation of [duoAlert](https://github.com/Seth-Johnson/duoAlert) by [Seth Johnson](https://gihtub.com/Seth-Johnson), in [rust](https://github.com/rust-lang/rust).
 
-#### what does it do?
+### what does it do?
 duoAlertOxide uses discord webhooks to send a message when a followed user extends or starts a streak based on their daily goal.
 
 <p>&nbsp;</p>
