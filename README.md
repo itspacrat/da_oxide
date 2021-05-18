@@ -13,17 +13,16 @@ duoAlertOxide uses discord webhooks to send a message when a followed user exten
 
 ## how do i get this up and running?
 
-#### what does this depend on?
+### what does this depend on?
 - [rust](https://github.com/rust-lang/rust) (which we'd hope is obvious by now)
 
-#### building from source
+### building from source
 - clone this repository and change into the directory it was cloned in (default duoAlertOxide)
+- set up the [JSON config](#how-do-i-configure-this)
 - run `cargo build` to produce a runnable executable (default path `target/debug/<executable>`)
 - run the aforementioned executable!*
 
-<sub>* may need additional setup. see [how do i configure this?](#how-do-i-configure-this) </sub>
-
-#### how do i configure this?
+### how do i configure this?
 
 DuoAlert reads a basic JSON configuration file to determine which users to follow and what the webhook URL is.  If `use_giphy` is `true` then the phrases pulled from phrases will be used to search giphy and pull the top gif. If `false` your predetermined gifs will be used.
 
@@ -47,7 +46,7 @@ config.json
 <p>&nbsp;</p>
 
 ## do we have plans for cool stuff?
-#### planned features
+### planned features
 - multi-hook support
 <h6><b><i>are we affiliated at all?</i></b></h6>
 <sub>
