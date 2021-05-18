@@ -26,11 +26,7 @@ duoAlertOxide uses discord webhooks to send a message when a followed user exten
 
 DuoAlert reads a basic JSON configuration file to determine which users to follow and what the webhook URL is.  If `use_giphy` is `true` then the phrases pulled from phrases will be used to search giphy and pull the top gif. If `false` your predetermined gifs will be used.
 
-place your `config.json` file in the directory the command is ran from:
-```
-config.json
---------------------------------
-```
+place your `config.json` file in the directory the command is ran from, and populate it:
 
 ```json
 	{
@@ -48,6 +44,8 @@ config.json
 ## do we have plans for cool stuff?
 ### planned features
 - multi-hook support
+- argc- & argv-style input for custom paths and modularity
+- "official" repo packaging for arch and possibly launchpad
 <h6><b><i>are we affiliated at all?</i></b></h6>
 <sub>
 We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Duolingo, or any of its subsidiaries or its affiliates. The official Duolingo website can be found at http://duolingo.com. The name “Duolingo” as well as related names, marks, emblems and images are registered trademarks of Duolingo.
