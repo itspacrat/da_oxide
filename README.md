@@ -45,7 +45,10 @@ place your `config.json` file in the directory the command is ran from, and popu
 ### planned features
 - multi-hook support
 - argc- & argv-style input for custom paths and modularity
-- "official" repo packaging for arch and possibly launchpad
+- packaging for:
+  - debian / fedora / etc... based linux distros
+  - the AUR
+  - ~~snap~~ <sub>we don't hate ourselves</sub>
 <h6><b><i>are we affiliated at all?</i></b></h6>
 <sub>
 We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Duolingo, or any of its subsidiaries or its affiliates. The official Duolingo website can be found at http://duolingo.com. The name “Duolingo” as well as related names, marks, emblems and images are registered trademarks of Duolingo.
