@@ -1,23 +1,26 @@
+// use serde to serialize/deserialize
+// json
 extern crate serde_json;
 extern crate serde;
 extern crate serde_derive;
+// use reqwest to manage http requests
+// for the GET and POST portions
 extern crate reqwest;
 
-//use rand::Rng;
 use std::{
-    /*error,*/
+    /*error,*/ // error currently unused
     fs::{
-        File,
-        read_to_string
+        File, // file used to write streak data
+        read_to_string // used to string-ify json
     },
     path::{
-        Path
+        Path // used to check if files exist
     },
     collections::{
-        HashMap
+        HashMap // used to map json to rust KVPs
     }
 };
-//use serde::{};
+
 use serde_json::{
     Value,
     Map,
@@ -34,15 +37,7 @@ struct Config {
     password: String
 }
 
-fn login(logindata: serde_json::Value) {
-    let logindata = logindata;//plceholder
-    
-    // maybe fix and turn this into json later
-
-    //let jwt: &str = "";
-}
-
-fn get_config(cfg_path: &str) -> Value {
+fn get_config(cfg_path: &str) {
 
     if !Path::new(cfg_path).exists() {
         // cry about nonexistent path
@@ -57,17 +52,50 @@ fn get_config(cfg_path: &str) -> Value {
 
         let config_r: &str = &config_r;
     
-        // parse string as json val
+        /*/ parse string as json val
         let config: serde_json::Value = serde_json::from_str(config_r)
         .expect("JSON was not well-formatted");
 
-        /*/ debug
-        println!("LOAD CONFIG: {}",String::from(config_r))
-        */
-
         config
+        */
         
+        config_r
     }
+}
+
+fn login(logindata: serde_json::Value) {
+    let logindata = logindata;//plceholder
+    
+    // maybe fix and turn this into json later
+
+    //let jwt: &str = "";
+}
+
+fn check_data() {
+
+    // Read streak data file to string
+    let previous_r = read_to_string("streak_data.json")
+        .expect("Something went wrong whilst reading the config file");
+
+    // make previous_r string literal by borrowing previous_r into itself
+    let previous_r: &str = &previous_r;
+    
+    // parse string as json val
+    let previous: serde_json::Value = serde_json::from_str(previous_r)
+        .expect("JSON was not well-formatted");
+    
+    /* map json to hashmap? */
+    
+}
+
+fn update_data() {
+
+}
+
+fn update_data_file() {
+    /*
+    Dump json to streak_data.json
+    */
 }
 
 fn send_discord(r_msg: String, url :String, version: String, timestamp: String ) {
@@ -92,79 +120,36 @@ fn send_discord(r_msg: String, url :String, version: String, timestamp: String )
     }"#, r_msg, url, version, timestamp);
 }
 
-
-
-fn update_data() {
-
-}
-
-fn check_data() {
-
-    // Read streak data file to string
-    let previous_r = read_to_string("streak_data.json")
-        .expect("Something went wrong whilst reading the config file");
-
-    // make previous_r string literal by borrowing previous_r into itself
-    let previous_r: &str = &previous_r;
-    
-    /*/ debug
-    println!("LOAD PREVIOUS STREAK DATA: {}",String::from(previous_r));
-    */
-    
-    // parse string as json val
-    let previous: serde_json::Value = serde_json::from_str(previous_r)
-        .expect("JSON was not well-formatted");
-    
-    /* map json to hashmap? */
-    
-}
-
-fn update_data_file() {
-    /*
-    Dump json to streak_data.json
-    */
-}
-
-
+// MAIN. RUNS FIRST
 fn main() {
 
-    /*
-    // Todo: add argv/argc checking before
-    // setting vars for custom path
-    // support
-    */
-
-    // define filepaths
+    // define file paths
     let config_path: &str = "config.json";
     let streak_data_path: &str = "streak_data.json";
 
-    // Todo: Impliment these checks better ?????
+    // check if config path exists
     if !Path::new(config_path).exists() {
         // cry about nonexistent path
         println!("no data");
     } else {
-        // check the data in the file
-        let my_config: serde_json::Value = get_config(config_path);
+
+        // login with stored details
+        let my_config = get_config(config_path);
         login(my_config);
         update_data();
 
-        /*
-    get streak data
-    */
-
+        // check if streak data exists
         if !Path::new(streak_data_path).exists() {
-            // cry about nonexistent path
+
+            // if not, cry about nonexistent path
             println!("no data");
+            
         } else {
-            // check the data in the file
+
+            // if so, check the data in the file
             check_data();
+
         };
         update_data_file();
     };
-
-    
-
-    
 }
-
-// Todo: impliment tests
