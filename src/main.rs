@@ -1,49 +1,62 @@
+/*
 extern crate serde_json;
 extern crate serde;
 extern crate serde_derive;
 extern crate reqwest;
+*/
 
 //use rand::Rng;
 use std::{
-    /*error,*/
+    collections::{
+        HashMap
+    }, 
     fs::{
         File,
         read_to_string
     },
     path::{
         Path
-    },
-    collections::{
-        HashMap
     }
 };
-//use serde::{};
+
+use serde::{Deserialize, Serialize};
+
 use serde_json::{
     Value,
     Map,
     Result
 };
 
-fn login(logindata: serde_json::Value) {
-    let logindata = logindata;//plceholder
-    
-    // maybe fix and turn this into json later
+#[derive(Serialize, Deserialize)]
+struct Config {
+    username: String,
+    password: String,
 
-    //let jwt: &str = "";
+
 }
 
-fn get_config(cfg_path: &str) -> HashMap<String, String> {
+struct StreakData {
+    user: String,
+    streak: i32
+}
+
+fn login(logindata: Config) {
+
+    let logindata = logindata;//plceholder
+    
+}
+
+fn get_config(cfg_path: &str) -> Config {
         
     let config_r = read_to_string(cfg_path)
         .expect("Something went wrong whilst reading the config file");
 
     let config_r: &str = &config_r;
     
-    // parse string as json val
-    let config: HashMap<String, String> = serde_json::from_str(config_r).unwrap();
-    /*let mut config: HashMap<String, String>;
-    config = ;*/
-
+    // parse string as ConfigMap structure
+    let config: Config = serde_json::from_str(config_r).unwrap();
+    
+    // return the ConfigMap "config"
     config
 }
 
@@ -52,14 +65,14 @@ fn send_discord(r_msg: String, url :String, version: String, timestamp: String )
     let data = (r#" {
         "embeds":[{
           "title":"Oxide Alert",
-          "description":"{}",
+          "description":"{r_msg}",
           "color":0xff8000,
           "type":"rich",
           "thumbnail": {
             "url":"https://cdn.discordapp.com/attachments/722708774967574618/841396425429352488/68747470733a2f2f692e696d6775722e636f6d2f68534c30784b502e706e67-NEW-icon.png"
           },
           "image": {
-            "url":"{}"
+            "url":"{url}"
           },
           "footer":{
             "text":"DuoAlert v{} | {} | Powered by GIPHY",
@@ -75,10 +88,10 @@ fn update_data() {
 
 }
 
-fn check_data() {
+fn check_data(path: &str) {
 
     // Read streak data file to string
-    let previous_r = read_to_string("streak_data.json")
+    let previous_r = read_to_string(path)
         .expect("Something went wrong whilst reading the config file");
 
     // make previous_r string literal by borrowing previous_r into itself
@@ -114,15 +127,11 @@ fn main() {
     } else {
 
         // check the data in the file
-        let my_config: HashMap<String, String> = get_config(config_path);
+        let server_config = get_config(config_path);
         
-        println!("{}",my_config.get("Name").unwrap());
+        println!("logging in with user {}",server_config.username);
         //login(my_config);
         //update_data();
-
-        /*
-    get streak data
-    */
 
         if !Path::new(streak_data_path).exists() {
             
@@ -131,7 +140,7 @@ fn main() {
         
         } else {
             // check the data in the file
-            check_data();
+            check_data(streak_data_path);
         };
         update_data_file();
     };
