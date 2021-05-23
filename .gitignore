@@ -6,10 +6,9 @@ config.json.live
 config.json
 __pycache__/
 Cargo.lock
-.vscode
-#.vs
 
 # blake-isms // github.com/parkcitymedia/
+.vscode
 alert.py.scaffold
 playground.rs
 
