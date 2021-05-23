@@ -24,16 +24,6 @@ use serde_json::{
     Result
 };
 
-// Holds the config data
-struct Config {
-    users: String,
-    webhook_url: String,
-    giphy_apikey: String,
-    giphy_rating: String,
-    username: String,
-    password: String
-}
-
 fn login(logindata: serde_json::Value) {
     let logindata = logindata;//plceholder
     
@@ -42,32 +32,19 @@ fn login(logindata: serde_json::Value) {
     //let jwt: &str = "";
 }
 
-fn get_config(cfg_path: &str) -> Value {
-
-    if !Path::new(cfg_path).exists() {
-        // cry about nonexistent path
-        println!("failed to retrieve config file from {}", String::from(cfg_path));
-        panic!();
-
-    } else {
+fn get_config(cfg_path: &str) -> HashMap<String, String> {
         
-        // check the config data in the file
-        let config_r = read_to_string(cfg_path)
+    let config_r = read_to_string(cfg_path)
         .expect("Something went wrong whilst reading the config file");
 
-        let config_r: &str = &config_r;
+    let config_r: &str = &config_r;
     
-        // parse string as json val
-        let config: serde_json::Value = serde_json::from_str(config_r)
-        .expect("JSON was not well-formatted");
+    // parse string as json val
+    let config: HashMap<String, String> = serde_json::from_str(config_r).unwrap();
+    /*let mut config: HashMap<String, String>;
+    config = ;*/
 
-        /*/ debug
-        println!("LOAD CONFIG: {}",String::from(config_r))
-        */
-
-        config
-        
-    }
+    config
 }
 
 fn send_discord(r_msg: String, url :String, version: String, timestamp: String ) {
@@ -107,14 +84,11 @@ fn check_data() {
     // make previous_r string literal by borrowing previous_r into itself
     let previous_r: &str = &previous_r;
     
-    /*/ debug
-    println!("LOAD PREVIOUS STREAK DATA: {}",String::from(previous_r));
-    */
-    
-    // parse string as json val
+    /*/ parse string as json val
     let previous: serde_json::Value = serde_json::from_str(previous_r)
         .expect("JSON was not well-formatted");
-    
+    */
+
     /* map json to hashmap? */
     
 }
@@ -125,14 +99,7 @@ fn update_data_file() {
     */
 }
 
-
 fn main() {
-
-    /*
-    // Todo: add argv/argc checking before
-    // setting vars for custom path
-    // support
-    */
 
     // define filepaths
     let config_path: &str = "config.json";
@@ -140,21 +107,28 @@ fn main() {
 
     // Todo: Impliment these checks better ?????
     if !Path::new(config_path).exists() {
+
         // cry about nonexistent path
-        println!("no data");
+        println!("{} dosen't exist!",config_path);
+
     } else {
+
         // check the data in the file
-        let my_config: serde_json::Value = get_config(config_path);
-        login(my_config);
-        update_data();
+        let my_config: HashMap<String, String> = get_config(config_path);
+        
+        println!("{}",my_config.get("Name").unwrap());
+        //login(my_config);
+        //update_data();
 
         /*
     get streak data
     */
 
         if !Path::new(streak_data_path).exists() {
+            
             // cry about nonexistent path
-            println!("no data");
+            println!("{} dosen't exist!",streak_data_path);
+        
         } else {
             // check the data in the file
             check_data();

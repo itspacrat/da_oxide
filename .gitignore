@@ -3,6 +3,7 @@ duoAlert.log
 config.json
 alert.pyc
 config.json.live
+config.json
 __pycache__/
 Cargo.lock
 .vscode
