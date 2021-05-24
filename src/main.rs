@@ -7,9 +7,9 @@ extern crate reqwest;
 
 //use rand::Rng;
 use std::{
-    collections::{
-        HashMap
-    }, 
+    /*collections::{
+        /*HashMap*/
+    },*/
     fs::{
         File,
         read_to_string
@@ -19,7 +19,10 @@ use std::{
     }
 };
 
-use serde::{Deserialize, Serialize};
+use serde::{
+    Deserialize,
+    Serialize
+};
 
 use serde_json::{
     Value,
@@ -31,32 +34,67 @@ use serde_json::{
 struct Config {
     username: String,
     password: String,
-
-
+    webhook_url: String,
+    users: Vec<String>,
+    use_giphy: bool,
+    giphy_rating: String,
+    giphy_apikey: String
 }
 
+#[derive(Serialize, Deserialize)]
 struct StreakData {
     user: String,
     streak: i32
 }
 
-fn login(logindata: Config) {
+struct Login {
 
-    let logindata = logindata;//plceholder
-    
+    username: String,
+    password: String
+
+}
+
+struct Headers {
+    authorization: &'static str
+}
+
+fn login(configdata: Config) {
+
+    //set up logindata and local header struct
+    let headers = Headers{authorization: ""};
+    let server_login = Login {
+
+        // pull values from the config into here
+        // these may get stolen by this struct 
+        username: configdata.username,
+        password: configdata.password
+
+    };
+
+    // set up json web token for auth
+    let jwt: &str = "None";
+
+    if jwt != "None"  {
+        let headers.authorization = concat!("Bearer ",jwt);
+    } else {
+
+    }
+
 }
 
 fn get_config(cfg_path: &str) -> Config {
-        
+    
+    // 
     let config_r = read_to_string(cfg_path)
         .expect("Something went wrong whilst reading the config file");
-
+    
+    // borrow config_r into itself to make it a string litteral
     let config_r: &str = &config_r;
     
     // parse string as ConfigMap structure
     let config: Config = serde_json::from_str(config_r).unwrap();
     
-    // return the ConfigMap "config"
+    // return the Config type "config"
     config
 }
 
@@ -82,8 +120,6 @@ fn send_discord(r_msg: String, url :String, version: String, timestamp: String )
     }"#, r_msg, url, version, timestamp);
 }
 
-
-
 fn update_data() {
 
 }
@@ -97,13 +133,10 @@ fn check_data(path: &str) {
     // make previous_r string literal by borrowing previous_r into itself
     let previous_r: &str = &previous_r;
     
-    /*/ parse string as json val
-    let previous: serde_json::Value = serde_json::from_str(previous_r)
-        .expect("JSON was not well-formatted");
-    */
+    // parse string as StreakData structure
+    let previous: StreakData = serde_json::from_str(previous_r).unwrap();
 
-    /* map json to hashmap? */
-    
+
 }
 
 fn update_data_file() {
@@ -118,36 +151,42 @@ fn main() {
     let config_path: &str = "config.json";
     let streak_data_path: &str = "streak_data.json";
 
+    // define urls and endpoints
+    let login_url: &str = "https://www.duolingo.com/login";
+    let sadness_gif: &str = "https://media.giphy.com/media/Ty9Sg8oHghPWg/giphy.gif";
+
     // Todo: Impliment these checks better ?????
     if !Path::new(config_path).exists() {
 
         // cry about nonexistent path
-        println!("{} dosen't exist!",config_path);
+        println!("error: file \"{}\" dosen't exist!",config_path);
 
     } else {
 
         // check the data in the file
         let server_config = get_config(config_path);
         
+        // 
         println!("logging in with user {}",server_config.username);
-        //login(my_config);
-        //update_data();
 
+        // 
         if !Path::new(streak_data_path).exists() {
             
             // cry about nonexistent path
-            println!("{} dosen't exist!",streak_data_path);
+            println!("error: file \"{}\" dosen't exist!",streak_data_path);
         
         } else {
+
             // check the data in the file
             check_data(streak_data_path);
+
         };
-        update_data_file();
+
+        // locally update the data
+        update_data_file()
+
     };
-
-    
-
-    
+ 
 }
 
 // Todo: impliment tests
