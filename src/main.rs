@@ -55,7 +55,7 @@ struct Login {
 }
 
 struct Headers {
-    authorization: &'static str
+    authorization: String
 }
 
 fn login(configdata: Config) {
@@ -77,9 +77,7 @@ fn login(configdata: Config) {
 
     if jwt != "None" {
         // prepare header string and pass in as a Header.authorization value
-        //then borrow it into itself to make a string ref
         let header_string: String = "Bearer ".to_string() + jwt ;
-        let header_string: &str = header_string;
         let headers = Headers {
             authorization: header_string
         };
