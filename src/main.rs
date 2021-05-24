@@ -29,7 +29,7 @@ use serde_json::{
     Map,
     Result
 };
-
+// HOLDS SERVER CONFIG (from config.json)
 #[derive(Serialize, Deserialize)]
 struct Config {
     username: String,
@@ -40,13 +40,13 @@ struct Config {
     giphy_rating: String,
     giphy_apikey: String
 }
-
+// HOLDS STREAK DATA (from streak_data.json)
 #[derive(Serialize, Deserialize)]
 struct StreakData {
     user: String,
     streak: i32
 }
-
+// HOLDS LOGIN DATA (from config.json > login: Login)
 struct Login {
 
     username: String,
@@ -61,11 +61,12 @@ struct Headers {
 fn login(configdata: Config) {
 
     //set up logindata and local header struct
-    let headers = Headers{authorization: ""};
+    
     let server_login = Login {
 
         // pull values from the config into here
-        // these may get stolen by this struct 
+        // these may get stolen by this struct,
+        // but im not sure -Blake
         username: configdata.username,
         password: configdata.password
 
@@ -74,11 +75,18 @@ fn login(configdata: Config) {
     // set up json web token for auth
     let jwt: &str = "None";
 
-    if jwt != "None"  {
-        let headers.authorization = concat!("Bearer ",jwt);
+    if jwt != "None" {
+        // prepare header string and pass in as a Header.authorization value
+        //then borrow it into itself to make a string ref
+        let header_string: String = "Bearer ".to_string() + jwt ;
+        let header_string: &str = header_string;
+        let headers = Headers {
+            authorization: header_string
+        };
+    
     } else {
 
-    }
+    };
 
 }
 
