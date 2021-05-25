@@ -1,18 +1,22 @@
-/*
 extern crate serde_json;
 extern crate serde;
 extern crate serde_derive;
 extern crate reqwest;
-*/
+extern crate chrono;
 
+
+use core::time;
 //use rand::Rng;
 use std::{
     /*collections::{
         /*HashMap*/
     },*/
-    time::{
-        SystemTime
+    convert::{
+        *
     },
+    /*time::{
+        SystemTime
+    },*/
     fs::{
         File,
         read_to_string
@@ -21,7 +25,13 @@ use std::{
         Path
     }
 };
-
+use chrono::{
+    DateTime,
+    Local,
+    offset::{
+        Utc
+    }
+};
 use serde::{
     Deserialize,
     Serialize
@@ -165,11 +175,33 @@ fn update_data_file() {
     Dump json to streak_data.json
     */
 }
+
+fn truncate_timestamp(init_time: DateTime<Local>) -> String  {
+    //let timestamp: DateTime<Local> = init_time.format("%d/%m/%Y %T");
+    let timestamp: String = format!("{}",init_time);
+    let timestamp: &str = &timestamp;
+    let timestamp_chars: Vec<char> = timestamp.chars().collect();
+    let timestamp_truncated = &timestamp_chars[0..16].to_vec();
+    let timestamp = timestamp_truncated.iter().collect::<String>();
+    /*let mut vec_counter: usize = 0;
+   
+    if vec_counter <=  {
+        timestamp_truncated.push(timestamp_chars[vec_counter]);
+        vec_counter += 1;
+        return String::from("pushing...");
+    } else {
+        // re-string timestamp
+        let timestamp = timestamp_truncated.iter().collect::<String>();
+        timestamp
+    }*/
+    timestamp
+}
 fn main() {
 
     //set up timestamping
-    let init_time = SystemTime::now();
-    let timestamp: String = String::from("");
+    let init_time: DateTime<Local> = Local::now();
+
+    let timestamp = truncate_timestamp(init_time);
     
     // define startup info vars
     let version: String = String::from("0.1.0");
