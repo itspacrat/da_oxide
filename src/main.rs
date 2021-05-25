@@ -177,23 +177,19 @@ fn update_data_file() {
 }
 
 fn truncate_timestamp(init_time: DateTime<Local>) -> String  {
-    //let timestamp: DateTime<Local> = init_time.format("%d/%m/%Y %T");
+    
+    // grab raw timestamp and String > &str-ify
     let timestamp: String = format!("{}",init_time);
     let timestamp: &str = &timestamp;
+
+    // collect the raw timestamp into a Vec<char>
     let timestamp_chars: Vec<char> = timestamp.chars().collect();
+
+    // slice and collect the previous Vec<char> and re-String it
     let timestamp_truncated = &timestamp_chars[0..16].to_vec();
     let timestamp = timestamp_truncated.iter().collect::<String>();
-    /*let mut vec_counter: usize = 0;
-   
-    if vec_counter <=  {
-        timestamp_truncated.push(timestamp_chars[vec_counter]);
-        vec_counter += 1;
-        return String::from("pushing...");
-    } else {
-        // re-string timestamp
-        let timestamp = timestamp_truncated.iter().collect::<String>();
-        timestamp
-    }*/
+
+    // return the bullshit
     timestamp
 }
 fn main() {
@@ -201,6 +197,7 @@ fn main() {
     //set up timestamping
     let init_time: DateTime<Local> = Local::now();
 
+    // pretty-ify the timestamp for printing
     let timestamp = truncate_timestamp(init_time);
     
     // define startup info vars
