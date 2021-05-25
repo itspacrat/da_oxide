@@ -169,6 +169,37 @@ fn check_data(path: &str) {
     let previous: StreakData = serde_json::from_str(previous_r).unwrap();
 
 }
+fn fetch_streak_data(streak_data_path: &str) {
+    
+    // check if streak data file exists
+    println!("main: checking streak data path...");
+    if !Path::new(streak_data_path).exists() {
+        
+        // cry about nonexistent path
+        println!("Oxide: error: file \"{}\" dosen't exist!",streak_data_path);
+        println!("main: fetch {}: exit.",streak_data_path);
+    
+    } else {
+
+        // check the data in the file
+        check_data(streak_data_path);
+
+    };
+}
+// check if streak data file exists
+        println!("main: checking streak data path...");
+        if !Path::new(streak_data_path).exists() {
+            
+            // cry about nonexistent path
+            println!("Oxide: error: file \"{}\" dosen't exist!",streak_data_path);
+            println!("main: fetch {}: exit.",streak_data_path);
+        
+        } else {
+
+            // check the data in the file
+            check_data(streak_data_path);
+
+        };
 
 fn update_data_file() {
     /*
@@ -223,7 +254,7 @@ fn main() {
     if !Path::new(config_path).exists() {
 
         // cry about nonexistent path
-        println!("Oxide: error: file \"{}\" dosen't exist!",config_path);
+        println!("main: error: file \"{}\" dosen't exist!",config_path);
         println!("main: fetch {}: exit.",config_path);
 
     } else {
@@ -231,20 +262,6 @@ fn main() {
         // instanciate config server_config: Config
         let server_config = get_config(config_path);
 
-        // check if streak data file exists
-        println!("main: checking streak data path...");
-        if !Path::new(streak_data_path).exists() {
-            
-            // cry about nonexistent path
-            println!("Oxide: error: file \"{}\" dosen't exist!",streak_data_path);
-            println!("main: fetch {}: exit.",streak_data_path);
-        
-        } else {
-
-            // check the data in the file
-            check_data(streak_data_path);
-
-        };
 
         // locally update the data
         update_data_file()
