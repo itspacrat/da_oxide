@@ -71,6 +71,7 @@ struct Headers {
     authorization: String
 }
 
+// LOGIN WITH configdata; Config
 fn login(configdata: Config) {
 
     //set up logindata and local header struct
@@ -169,7 +170,9 @@ fn check_data(path: &str) {
     let previous: StreakData = serde_json::from_str(previous_r).unwrap();
 
 }
-fn fetch_streak_data(streak_data_path: &str) {
+
+// FETCH STREAK DATA
+fn fetch_streak_data(streak_data_path: &str, session: &str) {
     
     // check if streak data file exists
     println!("main: checking streak data path...");
@@ -186,20 +189,6 @@ fn fetch_streak_data(streak_data_path: &str) {
 
     };
 }
-// check if streak data file exists
-        println!("main: checking streak data path...");
-        if !Path::new(streak_data_path).exists() {
-            
-            // cry about nonexistent path
-            println!("Oxide: error: file \"{}\" dosen't exist!",streak_data_path);
-            println!("main: fetch {}: exit.",streak_data_path);
-        
-        } else {
-
-            // check the data in the file
-            check_data(streak_data_path);
-
-        };
 
 fn update_data_file() {
     /*
@@ -258,13 +247,19 @@ fn main() {
         println!("main: fetch {}: exit.",config_path);
 
     } else {
+        println!(" config file exists. continuing.");
 
         // instanciate config server_config: Config
         let server_config = get_config(config_path);
+        
+        // login with the config AND streak data path
+        let session = login(server_config);
 
-
+        // fetch streak data with token
+        fetch_streak_data(streak_data_path,session);
+        
         // locally update the data
-        update_data_file()
+        //update_data_file()
 
     };
     println!(r#"main: exit.
