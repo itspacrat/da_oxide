@@ -8,7 +8,7 @@ pub fn send_discord(r_msg: String, url :String, version: String, timestamp: Stri
         "embeds":[{{
           "title":"Oxide Alert",
           "description":"{r_msg}",
-          "color":0xff8000,
+          "color":"693382",
           "type":"rich",
           "thumbnail": {{
             "url":"{icon}"

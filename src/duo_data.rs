@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{*, config::Config};
 
 pub fn check() {
     unimplemented!();
@@ -20,4 +20,20 @@ pub fn check() {
 
 pub fn update() {
     unimplemented!()
+}
+
+async fn update_data(session: &mut Client, config: &config::Config) -> Result<(), Box<dyn std::error::Error>> {
+
+    let users = &config.users;
+
+    for i in users {
+
+        let user = i;
+        let resp = session.get(format!("https://www.duolingo.com/users/{}",user));
+        println!("USER: {} | {:#?}",user,resp);
+
+    }
+
+    Ok(())
+
 }

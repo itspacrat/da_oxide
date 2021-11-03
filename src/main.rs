@@ -4,30 +4,17 @@ use std::{
     collections::{HashMap}
 };
 
-use reqwest::Client;
+use reqwest::{Client,get};
 use serde::{Deserialize,Serialize};
 use serde_json::{Value,Map};
 
 pub mod config;
 pub mod discord;
 pub mod duo;
+use duo::fetch;
 pub mod duo_data;
+use duo_data::{update,check};
 
-async fn update_data(session: &mut Client, config: &config::Config) -> Result<(), Box<dyn std::error::Error>> {
-
-    let users = &config.users;
-
-    for i in users {
-
-        let user = i;
-        let resp = session.get(format!("https://www.duolingo.com/users/{}",user));
-        println!("USER: {} | {:#?}",user,resp);
-
-    }
-
-    Ok(())
-
-}
 
 /// MAIN. RUNS FIRST
 #[tokio::main]
@@ -39,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut my_client: Client = Client::new();
 
     // define endpoints
-    let login_endpoint: &str = "https://www.duolingo.com/login";
+    let login_endpoint: &str = "https://www.duolingo.com/users/";
 
     // check if config path exists
     if !Path::new(config_path).exists() {
@@ -51,14 +38,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // login with stored details
         let my_config = config::get_config(config_path).await?;
-        let mut session = duo::login(
+        /*let mut session = duo::login(
             &my_config.username,
             &my_config.password,
             &login_endpoint, 
             &mut my_client
-        ).await?;
+        ).await?;*/
 
-        update_data(&mut session, &my_config);
+        fetch(&my_config,&login_endpoint);
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
@@ -69,11 +56,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
 
             // if so, check the data in the file
-            duo_data::check();
+            check();
 
         };
 
-        duo_data::update();
+        update();
     };
 
     Ok(())
