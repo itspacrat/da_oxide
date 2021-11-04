@@ -26,7 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut my_client: Client = Client::new();
 
     // define endpoints
-    let login_endpoint: &str = "https://www.duolingo.com/users/";
+    let login_endpoint: &str = "https://www.duolingo.com/login";
 
     // check if config path exists
     if !Path::new(config_path).exists() {
@@ -38,14 +38,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // login with stored details
         let my_config = config::get_config(config_path).await?;
-        /*let mut session = duo::login(
+        let mut session = duo::login(
             &my_config.username,
             &my_config.password,
-            &login_endpoint, 
+            &login_endpoint,
             &mut my_client
-        ).await?;*/
+        ).await?;
 
-        fetch(&my_config,&login_endpoint);
+        fetch(&my_config,&mut session).await?;
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
@@ -56,11 +56,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
 
             // if so, check the data in the file
-            check();
+            //check();
 
         };
 
-        update();
+        //update();
     };
 
     Ok(())
