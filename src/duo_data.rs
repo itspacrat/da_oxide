@@ -1,5 +1,8 @@
 use crate::{*, config::Config};
-
+use reqwest::{Response};
+//use serde_json::{Value};
+///test if a streak is greater than, equal to,
+/// or less than the previous streak.
 pub fn check() {
     unimplemented!();
 
@@ -35,5 +38,9 @@ async fn update_data(session: &mut Client, config: &config::Config) -> Result<()
     }
 
     Ok(())
+
+}
+
+pub async fn mine_jwt(json: Response) {
 
 }
