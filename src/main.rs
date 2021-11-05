@@ -6,7 +6,7 @@ use std::{
 
 use reqwest::{Client,get};
 //use serde::{Deserialize,Serialize};
-use serde_json::{Value,Map};
+use serde_json::{Value};
 
 pub mod config;
 pub mod discord;
@@ -23,7 +23,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // define file paths
     let config_path: &str = "config.json";
     let streak_data_path: &str = "streak_data.json";
-    let mut my_client: Client = Client::new();
 
     // define endpoints
     let login_endpoint: &str = "https://www.duolingo.com/login";
@@ -41,8 +40,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut session = duo::login(
             &my_config.username,
             &my_config.password,
-            &login_endpoint,
-            &mut my_client
+            &login_endpoint
         ).await?;
 
         fetch(&my_config,&mut session).await?;

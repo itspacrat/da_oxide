@@ -2,7 +2,7 @@ use crate::{config::Config, *};
 use reqwest::Response;
 use std::collections::{HashMap};
 
-pub async fn login(username: &String,password: &String, endpoint: &str, client: &mut Client) -> Result<Client, Box<dyn std::error::Error>> {
+pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<Client, Box<dyn std::error::Error>> {
     
     let mut session: Client = Client::new();
 
@@ -11,6 +11,7 @@ pub async fn login(username: &String,password: &String, endpoint: &str, client: 
     let accept_encoding = String::from("identity");
     let user_agent = String::from("duoalert_oxide");
 
+    // Insert headers
     let mut login_json = HashMap::new();
     login_json.insert("login",username);
     login_json.insert("password",password);
@@ -24,6 +25,8 @@ pub async fn login(username: &String,password: &String, endpoint: &str, client: 
     .json(&login_json)
     .send().await;
     println!("{:?}",resp);
+    
+    // return the session
     Ok(session)
 }
 
