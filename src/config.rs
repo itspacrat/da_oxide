@@ -18,11 +18,6 @@ pub struct Config {
     pub password: String
 }
 
-struct Login {
-    username: String,
-    password: String
-}
-
 ///takes a `config.json` file and serializes it with serde_json
 pub async fn get_config(cfg_path: &str) -> Result<Config, Box<dyn std::error::Error>> {
 
