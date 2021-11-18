@@ -6,7 +6,7 @@ use std::collections::{HashMap};
 use regex::Regex;
 
 /// login() takes a username, password, and endpoint 
-pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<Client, Box<dyn std::error::Error>> {
+pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<HeaderMap, Box<dyn std::error::Error>> {
 
     // DEFINE DEFAULT HEADER VALUES.
     let content_type = String::from("application/json");
@@ -19,48 +19,49 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 
 
     // ADD LOGIN HEADERS TO NEW CLIENT.
-    println!("Inserting headers");
+    println!("inserting login body...");
     login_json.insert("login",username);
     login_json.insert("password",password);
+    println!("done.\n");
     
+    println!("inserting login headers...");
     login_headers.insert("Content-Type", (&content_type).parse()?);
     login_headers.insert("Accept",(&accept).parse()?);
     login_headers.insert("Accept-Encoding",(&accept_encoding).parse()?);
     login_headers.insert("User-Agent",(&user_agent).parse()?);
     println!("done.\n");
 
+
     let client = Client::builder()
     .default_headers(login_headers)
     .build()?;
 
-    println!("Posting auth request");
+    println!("Posting auth request...");
     let resp = client
         .post(endpoint)
         .json(&login_json)
         .send().await?;
     println!("done.\n");
 
-    // make that shit USABLE
-    println!("converting response to string");
+    // csrf token sanitize/stringifying
+    println!("converting response to token strings...");
     let csrf_string = &(format!("{:#?}",&resp)[1269..1329]);
 
-    
-
+    // jwt stringifying
     let resp_string_jwt = &(format!("{:#?}",&resp)[1703..1840]);
-    
-    //let resp_vec: &Vec<char> = &(resp_string.chars().collect::<Vec<char>>());
-    //println!("{:?}",&resp_string);
-    let strip_mangles = Regex::new("\"")?;
-    println!("jwt:");
     let jwt_string = format!("Bearer {:#?}",&resp_string_jwt);
+    println!("done.\n");
 
+    // token sanitization
+    println!("sanitizing tokens...");
+    let strip_mangles = Regex::new("\"")?;
+    let csrf_string = String::from(strip_mangles.replace_all(&csrf_string,""));
     let jwt_string = String::from(strip_mangles.replace_all(&jwt_string,""));
     println!("done.\n");
-    println!("{}",&jwt_string);
     
     //login_headers.insert("Authorization",(&jwt_string).parse()?);
 
-    println!("\n{:?}",&login_json);
+    
 
     // return the client eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoyNzgwMjI0MDd9.prezuFQ2Uq_CDyHVXtukHjn-t6q5EjcmSoSXqXUqhbI
     println!("inserting jwt");
@@ -68,21 +69,25 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     auth_map.insert("Authorization",(&jwt_string).parse()?);
     auth_map.insert("Content-Type", (&content_type).parse()?);
     auth_map.insert("Accept",(&accept).parse()?);
-    auth_map.insert("Accept-Encoding",(&accept_encoding).parse()?);
+    //auth_map.insert("Accept-Encoding",(&accept_encoding).parse()?);// -- not necessary?
+    auth_map.insert("set-cookie",(&csrf_string).parse()?);
     auth_map.insert("User-Agent",(&user_agent).parse()?);
 
-    let jwt_client = Client::builder().default_headers(auth_map).build()?;
-
-    println!("{:#?}",&jwt_client);
-    Ok(jwt_client)
+    //let jwt_client = Client::builder().default_headers(auth_map).build()?;// -- no longer building another client here
+    println!("\n{:?}",&auth_map);
+    //println!("{:#?}",&jwt_client);
+    Ok(auth_map.clone())
 }
 
 /// fetches duolingo data for you and tracked users
-pub async fn fetch(config: &Config,client: &mut Client) -> Result<String, Box<dyn std::error::Error>> {
-    
-    let main_fetch_url = format!("https://duolingo.com/users/{}",&config.username);
+pub async fn fetch(username: &String,headers: HeaderMap) -> Result<String, Box<dyn std::error::Error>> {
+    unimplemented!();
+    let main_fetch_url = format!("https://duolingo.com/users/{}",&username);
 
     /*
+
+    BUILD CLIENT HERE WITH HEADERMAP FISRT THING!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     let mut login_json = HashMap::new();
 
     let content_type = String::from("application/json");
@@ -98,7 +103,6 @@ pub async fn fetch(config: &Config,client: &mut Client) -> Result<String, Box<dy
     login_json.insert("Accept-Encoding",&accept_encoding);
     login_json.insert("User-Agent",&user_agent);
     println!("done.\n");
-    */
 
     let resp  = client
     .get(main_fetch_url)
@@ -107,4 +111,5 @@ pub async fn fetch(config: &Config,client: &mut Client) -> Result<String, Box<dy
 
     println!("\n\n{:?}",resp);
     Ok(resp)
+    */
 }

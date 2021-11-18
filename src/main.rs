@@ -11,7 +11,7 @@ use serde_json::Value;
 pub mod config;
 pub mod discord;
 pub mod duo;
-use duo::fetch;
+use duo::{fetch,login};
 pub mod duo_data;
 use duo_data::{check, update};
 
@@ -27,21 +27,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // check if config path exists
     if !Path::new(config_path).exists() {
+
         // cry about nonexistent path
         println!("no data");
+
     } else {
         // login with stored details
         let my_config = config::get_config(config_path).await?;
-        let mut session =
-            duo::login(&my_config.username, &my_config.password, &login_endpoint).await?;
+        let login_map =
+            login(&my_config.username, &my_config.password, &login_endpoint).await?;
 
         println!("fetching userdata...");
-        fetch(&my_config,&mut session).await?;
+        fetch(&my_config.username,login_map).await?;
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
+
             // if not, cry about nonexistent path
             println!("no data");
+            
         } else {
 
             // if so, check the data in the file
