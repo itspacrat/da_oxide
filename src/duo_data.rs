@@ -41,6 +41,10 @@ async fn update_data(session: &mut Client, config: &config::Config) -> Result<()
 
 }
 
-pub async fn mine_jwt(json: Response) {
+/*
+pub async fn mine_jwt(resp: Response) -> Result<String, Box<dyn std::error::Error>> {
+    unimplemented!();
+    //let json_string: String = resp.json().await?.unwrap().text();
 
-}
+    //Ok(json_string)
+}*/
