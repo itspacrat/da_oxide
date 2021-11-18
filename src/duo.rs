@@ -38,9 +38,9 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 
     // make that shit USABLE
     println!("converting response to string");
-    let resp_string_csrf = &(format!("{:#?}",&resp)[1269..1329]);
+    let csrf_string = &(format!("{:#?}",&resp)[1269..1329]);
 
-    println!("\n\n{:#?}\n\n",&resp_string_csrf);
+    
 
     let resp_string_jwt = &(format!("{:#?}",&resp)[1703..1840]);
     
@@ -53,13 +53,13 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     let jwt_string = String::from(strip_mangles.replace_all(&jwt_string,""));
     println!("done.\n");
     println!("{}",&jwt_string);
-
-    println!("inserting jwt");
+    
     //login_headers.insert("Authorization",(&jwt_string).parse()?);
 
     println!("\n{:?}",&login_json);
 
     // return the client eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoyNzgwMjI0MDd9.prezuFQ2Uq_CDyHVXtukHjn-t6q5EjcmSoSXqXUqhbI
+    println!("inserting jwt");
     let mut auth_map = HeaderMap::new();
     auth_map.insert("Authorization",(&jwt_string).parse()?);
     auth_map.insert("Content-Type", (&content_type).parse()?);
