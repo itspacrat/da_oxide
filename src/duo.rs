@@ -5,9 +5,10 @@ use reqwest::{Response, header::HeaderMap};
 use std::collections::{HashMap};
 use regex::Regex;
 
+/// login() takes a username, password, and endpoint 
 pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<Client, Box<dyn std::error::Error>> {
 
-    // Insert relevant headers
+    // DEFINE DEFAULT HEADER VALUES.
     let content_type = String::from("application/json");
     let accept = String::from("text/plain");
     let accept_encoding = String::from("identity");
@@ -16,6 +17,8 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     let mut login_json = HashMap::new();
     let mut login_headers = HeaderMap::new();
 
+
+    // ADD LOGIN HEADERS TO NEW CLIENT.
     println!("Inserting headers");
     login_json.insert("login",username);
     login_json.insert("password",password);
@@ -24,10 +27,11 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     login_headers.insert("Accept",(&accept).parse()?);
     login_headers.insert("Accept-Encoding",(&accept_encoding).parse()?);
     login_headers.insert("User-Agent",(&user_agent).parse()?);
-    
     println!("done.\n");
 
-    let client = Client::builder().default_headers(login_headers.clone()).build()?;
+    let client = Client::builder()
+    .default_headers(login_headers)
+    .build()?;
 
     println!("Posting auth request");
     let resp = client
