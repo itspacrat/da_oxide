@@ -1,6 +1,6 @@
 [package]
 name = "duo_alert_oxide"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["parkcitymedia <blakemichaelgaynor@gmail.com>"]
 edition = "2018"
 
