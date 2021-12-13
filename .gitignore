@@ -7,14 +7,15 @@ config.json
 __pycache__/
 Cargo.lock
 .vscode
-storyboard.svg
+alert.py
 #.vs
 
 # blake-isms // github.com/parkcitymedia/
 .vscode
 alert.py.scaffold
+storyboard.svg
 playground.rs
-# blake file
+alert-mod.py
 roadmap.txt
 
 # Added by cargo
