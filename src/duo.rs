@@ -45,6 +45,8 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 
     let response_headers = resp.headers();
     println!("\n\nRESPONSE HEADERS\n\n{:#?}",response_headers);
+    
+    /* 
     // csrf token sanitize/stringifying
     println!("converting response to token strings...");
     let csrf_string = &(format!("{:#?}",&resp)[1269..1329]);
@@ -75,6 +77,7 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     fetch_map.insert("Cookie",(&cookie_string).parse()?);
     fetch_map.insert("User-Agent",(&user_agent).parse()?);
     println!("done.\n");
+    */
     
 
     Ok(fetch_map.clone())
