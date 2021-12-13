@@ -43,13 +43,15 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
         .send().await?;
     println!("done.\n");
 
+    let response_headers = resp.headers();
+    println!("\n\nRESPONSE HEADERS\n\n{:#?}",response_headers);
     // csrf token sanitize/stringifying
     println!("converting response to token strings...");
     let csrf_string = &(format!("{:#?}",&resp)[1269..1329]);
 
     // jwt stringifying
     let resp_string_jwt = &(format!("{:#?}",&resp)[1703..1840]);
-    let jwt_string = format!("Bearer {:#?}",&resp_string_jwt);
+    let jwt_string = format!("jwt_token={:#?};",&resp_string_jwt);
     println!("done.\n");
 
     // token sanitization
@@ -57,59 +59,40 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     let strip_mangles = Regex::new("\"")?;
     let csrf_string = String::from(strip_mangles.replace_all(&csrf_string,""));
     let jwt_string = String::from(strip_mangles.replace_all(&jwt_string,""));
+    let cookie_string = String::from(strip_mangles
+        .replace_all(&(format!("{csrf}{jwt}",csrf = &csrf_string,jwt = &jwt_string)),""));
     println!("done.\n");
-    
-    //login_headers.insert("Authorization",(&jwt_string).parse()?);
-
+    println!("{:#?}",cookie_string);
     
 
     // return the client eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoyNzgwMjI0MDd9.prezuFQ2Uq_CDyHVXtukHjn-t6q5EjcmSoSXqXUqhbI
-    println!("inserting jwt");
-    let mut auth_map = HeaderMap::new();
-    auth_map.insert("Authorization",(&jwt_string).parse()?);
-    auth_map.insert("Content-Type", (&content_type).parse()?);
-    auth_map.insert("Accept",(&accept).parse()?);
-    //auth_map.insert("Accept-Encoding",(&accept_encoding).parse()?);// -- not necessary?
-    auth_map.insert("set-cookie",(&csrf_string).parse()?);
-    auth_map.insert("User-Agent",(&user_agent).parse()?);
+    println!("inserting sanitized tokens to new map...");
+    let mut fetch_map = HeaderMap::new();
+    fetch_map.insert("Authorization",(&jwt_string).parse()?);
+    fetch_map.insert("Content-Type", (&content_type).parse()?);
+    fetch_map.insert("Accept",(&accept).parse()?);
+    //fetch_map.insert("Accept-Encoding",(&accept_encoding).parse()?);// -- not necessary?
+    fetch_map.insert("Cookie",(&cookie_string).parse()?);
+    fetch_map.insert("User-Agent",(&user_agent).parse()?);
+    println!("done.\n");
+    
 
-    //let jwt_client = Client::builder().default_headers(auth_map).build()?;// -- no longer building another client here
-    println!("\n{:?}",&auth_map);
-    //println!("{:#?}",&jwt_client);
-    Ok(auth_map.clone())
+    Ok(fetch_map.clone())
 }
 
 /// fetches duolingo data for you and tracked users
 pub async fn fetch(username: &String,headers: HeaderMap) -> Result<String, Box<dyn std::error::Error>> {
-    unimplemented!();
+
     let main_fetch_url = format!("https://duolingo.com/users/{}",&username);
 
-    /*
-
-    BUILD CLIENT HERE WITH HEADERMAP FISRT THING!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    let mut login_json = HashMap::new();
-
-    let content_type = String::from("application/json");
-    let accept = String::from("text/plain");
-    let accept_encoding = String::from("identity");
-    let user_agent = String::from("duoalert_oxide");
-
-    println!("Inserting headers");
-    login_json.insert("login",&config.username);
-    login_json.insert("password",&config.password);
-    login_json.insert("Content-Type", &content_type);
-    login_json.insert("Accept",&accept);
-    login_json.insert("Accept-Encoding",&accept_encoding);
-    login_json.insert("User-Agent",&user_agent);
-    println!("done.\n");
+    let client = Client::builder()
+    .default_headers(headers)
+    .build()?;
 
     let resp  = client
     .get(main_fetch_url)
     .send().await?
     .text().await?;
 
-    println!("\n\n{:?}",resp);
     Ok(resp)
-    */
 }
