@@ -45,7 +45,7 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 
     let response_headers = resp.headers();
     println!("\n\nRESPONSE HEADERS\n\n{:#?}",response_headers);
-    
+    let mut response_headers_mut = response_headers.clone();
     /* 
     // csrf token sanitize/stringifying
     println!("converting response to token strings...");
@@ -80,7 +80,7 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
     */
     
 
-    Ok(fetch_map.clone())
+    Ok(response_headers_mut)
 }
 
 /// fetches duolingo data for you and tracked users
