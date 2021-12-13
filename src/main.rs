@@ -25,10 +25,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // define endpoints
     let login_endpoint: &str = "https://www.duolingo.com/login";
 
-    // check if config path exists
+    // check if config path exists, if not
+    // cry about it
     if !Path::new(config_path).exists() {
 
-        // cry about nonexistent path
         println!("no data");
 
     } else {
@@ -37,15 +37,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let login_map =
             login(&my_config.username, &my_config.password, &login_endpoint).await?;
 
+        // FETCH USERDATA AND PRINT RESP
         println!("fetching userdata...");
-        fetch(&my_config.username,login_map).await?;
+        let my_data = fetch(&my_config.username,login_map).await?;
+        println!("\n\n{:#?}",&my_data);
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
 
             // if not, cry about nonexistent path
             println!("no data");
-            
+
         } else {
 
             // if so, check the data in the file
