@@ -1,6 +1,7 @@
 use std::{
     collections::HashMap,
     fs::{read_to_string, File},
+    io::prelude::*,
     path::Path,
 };
 
@@ -34,13 +35,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         // login with stored details
         let my_config = config::get_config(config_path).await?;
-        let login_map =
-            login(&my_config.username, &my_config.password, &login_endpoint).await?;
+        let auth_client = login(&my_config.username, &my_config.password, &login_endpoint).await?;
 
-        // FETCH USERDATA AND PRINT RESP
+        // FETCH USERDATA 
         println!("fetching userdata...");
-        let my_data = fetch(&my_config.username,login_map).await?;
-        println!("\n\n{:#?}",&my_data);
+        let my_data_r = fetch(&my_config.username,auth_client).await?;
+        let my_data_val = serde_json::to_value(my_data_r)?;
+        let my_streak = my_data_val["language_data"].to_string();
+        let mut streak_data = File::create(streak_data_path)?;
+        streak_data.write_all(my_streak.as_bytes())?;
+        //println!("\n\n{:#?}",&my_data);
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {

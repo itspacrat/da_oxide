@@ -2,6 +2,7 @@ use crate::{config::Config, *};
 //use serde::Serialize;
 //use serde_json::{Value, to_string, to_value};
 use reqwest::{Response, header::HeaderMap};
+use serde_json::to_value;
 use std::collections::{HashMap};
 use regex::Regex;
 
@@ -33,13 +34,13 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 
 
     let client = Client::builder()
-    .default_headers(login_headers)
+    .default_headers(login_headers.clone())
     .cookie_store(true)
     .build()?;
 
     println!("Posting auth request...");
     let resp = client
-        .post(/*endpoint*/"http://localhost:1299")
+        .post(endpoint)
         .json(&login_json)
         .send().await?;
     println!("done.\n");
@@ -56,19 +57,19 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 }
 
 /// fetches duolingo data for you and tracked users
-pub async fn fetch(username: &String,client: Client) -> Result<Value, Box<dyn std::error::Error>> {
+pub async fn fetch(username: &String,client: Client) -> Result<String, Box<dyn std::error::Error>> {
 
-    println!("\n\nRESPONSE HEADERS\n\n{:#?}",&headers);
     let main_fetch_url = format!("https://duolingo.com/users/{}",&username);
 
-    let client = Client::builder()
+    /*let client = Client::builder()
     .default_headers(headers)
-    .build()?;
+    .build()?;*/
 
     let resp  = client.get(main_fetch_url)
     //.headers(headers)
     .send().await?
     .text().await?;
 
+    //let resp_val = resp;
     Ok(resp)
 }
