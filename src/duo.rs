@@ -6,7 +6,7 @@ use std::collections::{HashMap};
 use regex::Regex;
 
 /// login() takes a username, password, and endpoint 
-pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<HeaderMap, Box<dyn std::error::Error>> {
+pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<Client, Box<dyn std::error::Error>> {
 
     // DEFINE DEFAULT HEADER VALUES.
     let content_type = String::from("application/json");
@@ -34,66 +34,39 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 
     let client = Client::builder()
     .default_headers(login_headers)
+    .cookie_store(true)
     .build()?;
 
     println!("Posting auth request...");
     let resp = client
-        .post(endpoint)
+        .post(/*endpoint*/"http://localhost:1299")
         .json(&login_json)
         .send().await?;
     println!("done.\n");
 
     let response_headers = resp.headers();
-    println!("\n\nRESPONSE HEADERS\n\n{:#?}",response_headers);
-    let mut response_headers_mut = response_headers.clone();
-    /* 
-    // csrf token sanitize/stringifying
-    println!("converting response to token strings...");
-    let csrf_string = &(format!("{:#?}",&resp)[1269..1329]);
+    //println!("\n\nRESPONSE HEADERS\n\n{:#?}",response_headers);
+    //let mut response_headers_mut = response_headers.clone();
+   
 
-    // jwt stringifying
-    let resp_string_jwt = &(format!("{:#?}",&resp)[1703..1840]);
-    let jwt_string = format!("jwt_token={:#?};",&resp_string_jwt);
-    println!("done.\n");
+    // form Auth header with values
+    login_headers.insert("Authorization",(format!("Bearer {}",response_headers["jwt"].to_str()?)).parse()?);
 
-    // token sanitization
-    println!("sanitizing tokens...");
-    let strip_mangles = Regex::new("\"")?;
-    let csrf_string = String::from(strip_mangles.replace_all(&csrf_string,""));
-    let jwt_string = String::from(strip_mangles.replace_all(&jwt_string,""));
-    let cookie_string = String::from(strip_mangles
-        .replace_all(&(format!("{csrf}{jwt}",csrf = &csrf_string,jwt = &jwt_string)),""));
-    println!("done.\n");
-    println!("{:#?}",cookie_string);
-    
-
-    // return the client eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoyNzgwMjI0MDd9.prezuFQ2Uq_CDyHVXtukHjn-t6q5EjcmSoSXqXUqhbI
-    println!("inserting sanitized tokens to new map...");
-    let mut fetch_map = HeaderMap::new();
-    fetch_map.insert("Authorization",(&jwt_string).parse()?);
-    fetch_map.insert("Content-Type", (&content_type).parse()?);
-    fetch_map.insert("Accept",(&accept).parse()?);
-    //fetch_map.insert("Accept-Encoding",(&accept_encoding).parse()?);// -- not necessary?
-    fetch_map.insert("Cookie",(&cookie_string).parse()?);
-    fetch_map.insert("User-Agent",(&user_agent).parse()?);
-    println!("done.\n");
-    */
-    
-
-    Ok(response_headers_mut)
+    Ok(client.clone())
 }
 
 /// fetches duolingo data for you and tracked users
-pub async fn fetch(username: &String,headers: HeaderMap) -> Result<String, Box<dyn std::error::Error>> {
+pub async fn fetch(username: &String,client: Client) -> Result<Value, Box<dyn std::error::Error>> {
 
+    println!("\n\nRESPONSE HEADERS\n\n{:#?}",&headers);
     let main_fetch_url = format!("https://duolingo.com/users/{}",&username);
 
     let client = Client::builder()
     .default_headers(headers)
     .build()?;
 
-    let resp  = client
-    .get(main_fetch_url)
+    let resp  = client.get(main_fetch_url)
+    //.headers(headers)
     .send().await?
     .text().await?;
 
