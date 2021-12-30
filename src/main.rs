@@ -12,9 +12,9 @@ use serde_json::Value;
 pub mod config;
 pub mod discord;
 pub mod duo;
-use duo::{fetch,login};
-pub mod duo_data;
-use duo_data::{check, update};
+use duo::{fetch,login,check};
+//pub mod duo_data; //obsolete
+//use duo_data::{check, update}; //obsolete
 
 /// MAIN. RUNS FIRST
 #[tokio::main]
@@ -39,23 +39,28 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // FETCH USERDATA 
         println!("fetching userdata...");
-        let my_data_r = fetch(&my_config.username,auth_client).await?;
+        let my_data_r = fetch(
+            &my_config.username,
+            &my_config.users,
+            auth_client
+        ).await?;
+
         let my_data_val: Value = serde_json::from_str(&my_data_r)?;
-        let my_streak = &my_data_val["site_streak"].to_string();
-        let mut streak_data = File::create(streak_data_path)?;
-        streak_data.write_all(my_streak.as_bytes())?;
+        //let my_streak = &my_data_val["site_streak"].to_string();
+        //let mut streak_data = File::create(streak_data_path)?;
+        //streak_data.write_all(my_streak.as_bytes())?;
         //println!("\n\n{:#?}",&my_data);
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
 
             // if not, cry about nonexistent path
-            println!("no data");
+            println!("no old data to check against. fetching new data...");
 
         } else {
 
             // if so, check the data in the file
-            //check();
+            check(streak_data_path);
         };
 
         //update();
