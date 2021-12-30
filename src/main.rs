@@ -41,7 +41,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // FETCH USERDATA 
         println!("fetching userdata...");
         let my_data_r = fetch(
-            &my_config.username,
+            /*&my_config.username,*/
             &my_config.users,
             auth_client
         ).await?;
