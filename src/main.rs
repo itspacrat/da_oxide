@@ -47,10 +47,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         ).await?;
 
         let my_data_val: Value = serde_json::from_str(&my_data_r)?;
-        //let my_streak = &my_data_val["site_streak"].to_string();
-        //let mut streak_data = File::create(streak_data_path)?;
-        //streak_data.write_all(my_streak.as_bytes())?;
-        //println!("\n\n{:#?}",&my_data);
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
