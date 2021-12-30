@@ -1,5 +1,6 @@
+#[allow(unused_imports)]
 use std::{
-    collections::HashMap,
+    //collections::HashMap, //hashmaps aren't real, they can't hurt you
     fs::{read_to_string, File},
     io::prelude::*,
     path::Path,
