@@ -1,10 +1,6 @@
-use crate::{config::Config, *};
-//use serde::Serialize;
-//use serde_json::{Value, to_string, to_value};
+use crate::{*};
 use reqwest::{header::HeaderMap, Response};
-//use serde_json::from_str; //serialization not performed here
 use std::collections::HashMap;
-//use regex::Regex; //obsolete
 
 /// login() takes a username, password, and endpoint
 pub async fn login(
@@ -58,26 +54,39 @@ pub async fn login(
 
 /// fetches duolingo data for you and tracked users
 pub async fn fetch(
-    username: &String,
+    /*username: &String,*/
     users: &Vec<String>,
     client: Client,
 ) -> Result<String, Box<dyn std::error::Error>> {
-    let main_fetch_url = format!("https://duolingo.com/users/{}", &username);
 
-    /*let client = Client::builder()
-    .default_headers(headers)
-    .build()?;*/
 
-    let resp = client
+    let mut data_val: serde_json::Map<String,Value> = serde_json::Map::new();
+    
+    // loop through users in config and fetch profile responses (SLOW :<)
+    for user in users {
+        let main_fetch_url = format!("https://duolingo.com/users/{}", &user);
+
+        println!("fetching data for user {}",&user);
+
+        let resp: String = client
         .get(main_fetch_url)
         //.headers(headers)
         .send()
         .await?
         .text()
         .await?;
+        println!("done.\n");
+
+        let user_val_r: Value = serde_json::from_str(&resp)?;
+        let user_val: Value = user_val_r["site_streak"].clone();
+
+        data_val.insert(format!("{}",user),user_val);
+        
+    }
+
 
     //let resp_val = resp;
-    Ok(resp)
+    Ok(String::from("placeholder"))
 }
 
 ///test if a streak is greater than, equal to,
@@ -91,28 +100,3 @@ pub fn check(path: &str) -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-
-/*
-pub fn update() {
-    unimplemented!()
-
-}
-*/
-
-/*
-pub fn fetch_tracked_users(session: &mut Client, config: &config::Config) -> Result<(), Box<dyn std::error::Error>> {
-
-    let users = &config.users;
-
-    for i in users {
-
-        let user = i;
-        let resp = session.get(format!("https://www.duolingo.com/users/{}",user));
-        println!("USER: {} | {:#?}",user,resp);
-
-    }
-
-    Ok(())
-
-}
-*/
