@@ -2,9 +2,9 @@ use crate::{config::Config, *};
 //use serde::Serialize;
 //use serde_json::{Value, to_string, to_value};
 use reqwest::{Response, header::HeaderMap};
-use serde_json::to_value;
+//use serde_json::from_str; //serialization not performed here
 use std::collections::{HashMap};
-use regex::Regex;
+//use regex::Regex; //obsolete
 
 /// login() takes a username, password, and endpoint 
 pub async fn login(username: &String,password: &String, endpoint: &str) -> Result<Client, Box<dyn std::error::Error>> {
@@ -57,7 +57,7 @@ pub async fn login(username: &String,password: &String, endpoint: &str) -> Resul
 }
 
 /// fetches duolingo data for you and tracked users
-pub async fn fetch(username: &String,client: Client) -> Result<String, Box<dyn std::error::Error>> {
+pub async fn fetch(username: &String, users: &Vec<String>, client: Client,) -> Result<String, Box<dyn std::error::Error>> {
 
     let main_fetch_url = format!("https://duolingo.com/users/{}",&username);
 
@@ -73,3 +73,44 @@ pub async fn fetch(username: &String,client: Client) -> Result<String, Box<dyn s
     //let resp_val = resp;
     Ok(resp)
 }
+
+
+///test if a streak is greater than, equal to,
+/// or less than the previous streak.
+pub fn check(path: &str) -> Result<(), Box<dyn std::error::Error>>{
+
+    // Read streak data file to string
+    let previous_r: &str = &(read_to_string(path)?);
+    
+    // parse string as json val
+    let previous: Value = serde_json::from_str(previous_r)?;
+    
+        Ok(())
+    
+    
+}
+
+/*
+pub fn update() {
+    unimplemented!()
+
+}
+*/
+
+/*
+pub fn fetch_tracked_users(session: &mut Client, config: &config::Config) -> Result<(), Box<dyn std::error::Error>> {
+
+    let users = &config.users;
+
+    for i in users {
+
+        let user = i;
+        let resp = session.get(format!("https://www.duolingo.com/users/{}",user));
+        println!("USER: {} | {:#?}",user,resp);
+
+    }
+
+    Ok(())
+
+}
+*/

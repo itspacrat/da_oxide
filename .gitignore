@@ -17,6 +17,7 @@ storyboard.svg
 playground.rs
 alert-mod.py
 roadmap.txt
+/ignorethis
 
 # Added by cargo
 /target
