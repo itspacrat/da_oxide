@@ -13,7 +13,7 @@ use serde_json::Value;
 pub mod config;
 pub mod discord;
 pub mod duo;
-use duo::{fetch,login,check};
+use duo::{login,fetch,StreakData,check};
 //pub mod duo_data; //obsolete
 //use duo_data::{check, update}; //obsolete
 
@@ -46,7 +46,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             auth_client
         ).await?;
 
-        let my_data_val: Value = serde_json::from_str(&my_data_r)?;
+        //let my_data_val: Value = serde_json::from_str(&my_data_r)?;
 
         // check if streak data exists
         if !Path::new(streak_data_path).exists() {
