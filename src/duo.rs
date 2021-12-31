@@ -1,13 +1,23 @@
-use crate::{*};
+use crate::*;
 use reqwest::{header::HeaderMap, Response};
-use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
+use serde_json;
+use std::{collections::HashMap, error::Error};
 
-/// login() takes a username, password, and endpoint
+#[derive(Serialize, Deserialize)]
+pub struct StreakData {
+    username: String,
+    streak: i32,
+}
+
+/// login() returns a mutated client with login cookies set.
+///
+/// it takes in a username, password, and a login endpoint.
 pub async fn login(
     username: &String,
     password: &String,
     endpoint: &str,
-) -> Result<Client, Box<dyn std::error::Error>> {
+) -> Result<Client, Box<dyn Error>> {
     // DEFINE DEFAULT HEADER VALUES.
     let content_type = String::from("application/json");
     let accept = String::from("text/plain");
@@ -36,7 +46,7 @@ pub async fn login(
         .build()?;
 
     println!("Posting auth request...");
-    let resp = client.post(endpoint).json(&login_json).send().await?;
+    let resp: Response = client.post(endpoint).json(&login_json).send().await?;
     println!("done.\n");
 
     let response_headers = resp.headers();
@@ -53,40 +63,49 @@ pub async fn login(
 }
 
 /// fetches duolingo data for you and tracked users
-pub async fn fetch(
-    /*username: &String,*/
-    users: &Vec<String>,
-    client: Client,
-) -> Result<String, Box<dyn std::error::Error>> {
+pub async fn fetch(users: &Vec<String>, client: Client) -> Result<String, Box<dyn Error>> {
+    // lets us aggregate userdata into one Map
+    let mut data_val: serde_json::Map<String, Value> = serde_json::Map::new();
 
-
-    let mut data_val: serde_json::Map<String,Value> = serde_json::Map::new();
-    
     // loop through users in config and fetch profile responses (SLOW :<)
     for user in users {
         let main_fetch_url = format!("https://duolingo.com/users/{}", &user);
 
-        println!("fetching data for user {}",&user);
+        println!("fetching data for user {}", &user);
 
         let resp: String = client
-        .get(main_fetch_url)
-        //.headers(headers)
-        .send()
-        .await?
-        .text()
-        .await?;
+            .get(main_fetch_url)
+            //.headers(headers)
+            .send()
+            .await?
+            .text()
+            .await?;
         println!("done.\n");
 
+        // convert the json resp into a Value for easy map insertion
         let user_val_r: Value = serde_json::from_str(&resp)?;
+        // grab the little fucker that we went through this porocess
+        // for. 0/10 not worth the hassle, duolingo. i hope you push
+        // a break to prod or something.
         let user_val: Value = user_val_r["site_streak"].clone();
 
-        data_val.insert(format!("{}",user),user_val);
-        
+        data_val.insert(format!("{}", user), user_val);
+
+        /* // later we may add more features and tracking
+        // to enrich the discord posts. you can optionally
+        // compile with features=[..., "advanced"] to enabke
+        // these.
+        #[cfg(feature="advanced")]
+        {
+
+        }
+        */
     }
 
-
+    let agg_data_r = serde_json::to_string_pretty(&data_val)?;
+    //let agg_data_string: Value = serde_json::from_str(&agg_data_r)?;
     //let resp_val = resp;
-    Ok(String::from("placeholder"))
+    Ok(agg_data_r)
 }
 
 ///test if a streak is greater than, equal to,
