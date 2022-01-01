@@ -34,21 +34,28 @@ place your `config.json` file in the directory the command is ran from, and popu
   	  "password":"<password_of_duolingo>",
 	  "webhook_url": "<webhook_url>",
 	  "users": ["exampleUser"],
-	  "use_giphy": true,
-	  "giphy_apikey": "YOUR_API_KEY_HERE",
-	  "giphy_rating": "G"
+	  // GIPHY INTEGRATION NOT CURRENTLY
+	  // IMPLIMENTED. STAY TUNED
+	  //"use_giphy": true,
+	  //"giphy_apikey": "YOUR_API_KEY_HERE",
+	  //"giphy_rating": "G"
 	}
 ```
 <p>&nbsp;</p>
 
 ## do we have plans for cool stuff?
 ### planned features
+- giphy integration
 - multi-hook support
 - argc- & argv-style input for custom paths and modularity
 - packaging for:
   - debian / fedora / etc... based linux distros
   - the AUR
   - ~~snap~~ <sub>we don't hate ourselves</sub>
+
+## references
+check out the [](wiki page) // in progress :(
+
 <h6><b><i>are we affiliated at all?</i></b></h6>
 <sub>
 We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Duolingo, or any of its subsidiaries or its affiliates. The official Duolingo website can be found at http://duolingo.com. The name “Duolingo” as well as related names, marks, emblems and images are registered trademarks of Duolingo.
