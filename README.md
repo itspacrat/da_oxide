@@ -16,7 +16,7 @@ duoAlertOxide uses discord webhooks to send a message when a followed user start
 ### what does this depend on?
 - [rust](https://www.rust-lang.org/learn/get-started) (which we'd hope is obvious by now)
 
-### building from source
+### how build from source???
 - clone this repository and change into the directory it was cloned in (default duo_alert_oxide)
 - set up the [JSON config](#how-do-i-configure-this)
 - run `cargo build` to produce a runnable executable (default path `target/debug/<executable>`)
