@@ -6,7 +6,7 @@ use std::{collections::HashMap, error::Error};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct StreakData {
-    pub users: Option<HashMap<String, u32>>,
+    pub users: Option<HashMap<String, u16>>,
 }
 /// login() returns a mutated client with login cookies set.
 ///
@@ -60,9 +60,11 @@ pub async fn login(
     Ok(client.clone())
 }
 
-/// fetches duolingo data for you and tracked users
+/// fetches duolingo data for tracked users in `config.json`.
+///
+/// maps users as a KVP (user: String, and streak: u32) and then
 pub async fn fetch(users: &Vec<String>, client: Client) -> Result<StreakData, Box<dyn Error>> {
-    let mut user_map: HashMap<String, u32> = HashMap::new();
+    let mut user_map: HashMap<String, u16> = HashMap::new();
 
     // loop through users in config and fetch profile responses (SLOW :<)
     for user in users {
@@ -86,37 +88,22 @@ pub async fn fetch(users: &Vec<String>, client: Client) -> Result<StreakData, Bo
         let user_val: String = (user_val_r["site_streak"].clone()).to_string();
 
         user_map.insert(user.clone(), user_val.parse()?);
-        //data_val.users[user] = ;
-
-        /* // later we may add more features and tracking
-        // to enrich the discord posts. you can optionally
-        // compile with features=[..., "advanced"] to enable
-        // these.
-        #[cfg(feature="advanced")]
-        {
-
-        }
-        */
+        
     }
 
     let streak_data: StreakData = StreakData {
         users: Some(user_map),
     };
-    println!("done.\n");
 
-    //let agg_data_r: String = serde_json::to_string_pretty(&data_val)?;
-    //let agg_data_struct: StreakData = serde_json::from_str(&(agg_data_r.clone()))?;
-
-    //println!("{:#?}",&agg_data_struct);
-
+    
     Ok(streak_data)
 }
 
 ///test if a streak is greater than, equal to,
 /// or less than the previous streak.
-pub fn check(path: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn check(old_path: &str, new_data: &StreakData ) -> Result<(), Box<dyn std::error::Error>> {
     // Read streak data file to string
-    let previous_r: &str = &(read_to_string(path)?);
+    let previous_r: &str = &(read_to_string(old_path)?);
 
     // parse string as json val
     let previous: Value = serde_json::from_str(previous_r)?;
