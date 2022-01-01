@@ -39,13 +39,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let auth_client = login(&my_config.username, &my_config.password, &login_endpoint).await?;
 
         // FETCH USERDATA 
-        println!("fetching userdata...");
-        let my_data_r = fetch(
+        println!("fetching streak data...");
+        let streak_data: StreakData = fetch(
             /*&my_config.username,*/
             &my_config.users,
             auth_client
         ).await?;
 
+        //println!("{:?}", streak_data);
         //let my_data_val: Value = serde_json::from_str(&my_data_r)?;
 
         // check if streak data exists
@@ -57,7 +58,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
 
             // if so, check the data in the file
-            check(streak_data_path);
+            //check(streak_data_path);
         };
 
         //update();

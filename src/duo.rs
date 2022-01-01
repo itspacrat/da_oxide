@@ -4,12 +4,10 @@ use serde::{Deserialize, Serialize};
 use serde_json;
 use std::{collections::HashMap, error::Error};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct StreakData {
-    username: String,
-    streak: i32,
+    pub users: Option<HashMap<String, u32>>,
 }
-
 /// login() returns a mutated client with login cookies set.
 ///
 /// it takes in a username, password, and a login endpoint.
@@ -63,16 +61,14 @@ pub async fn login(
 }
 
 /// fetches duolingo data for you and tracked users
-pub async fn fetch(users: &Vec<String>, client: Client) -> Result<String, Box<dyn Error>> {
-    // lets us aggregate userdata into one Map
-    let mut data_val: serde_json::Map<String, Value> = serde_json::Map::new();
+pub async fn fetch(users: &Vec<String>, client: Client) -> Result<StreakData, Box<dyn Error>> {
+    let mut user_map: HashMap<String, u32> = HashMap::new();
 
     // loop through users in config and fetch profile responses (SLOW :<)
     for user in users {
+        println!("    fetching data for user {}", &user);
+
         let main_fetch_url = format!("https://duolingo.com/users/{}", &user);
-
-        println!("fetching data for user {}", &user);
-
         let resp: String = client
             .get(main_fetch_url)
             //.headers(headers)
@@ -80,20 +76,21 @@ pub async fn fetch(users: &Vec<String>, client: Client) -> Result<String, Box<dy
             .await?
             .text()
             .await?;
-        println!("done.\n");
+        println!("    done.\n");
 
         // convert the json resp into a Value for easy map insertion
         let user_val_r: Value = serde_json::from_str(&resp)?;
         // grab the little fucker that we went through this porocess
         // for. 0/10 not worth the hassle, duolingo. i hope you push
         // a break to prod or something.
-        let user_val: Value = user_val_r["site_streak"].clone();
+        let user_val: String = (user_val_r["site_streak"].clone()).to_string();
 
-        data_val.insert(format!("{}", user), user_val);
+        user_map.insert(user.clone(), user_val.parse()?);
+        //data_val.users[user] = ;
 
         /* // later we may add more features and tracking
         // to enrich the discord posts. you can optionally
-        // compile with features=[..., "advanced"] to enabke
+        // compile with features=[..., "advanced"] to enable
         // these.
         #[cfg(feature="advanced")]
         {
@@ -102,10 +99,17 @@ pub async fn fetch(users: &Vec<String>, client: Client) -> Result<String, Box<dy
         */
     }
 
-    let agg_data_r = serde_json::to_string_pretty(&data_val)?;
-    //let agg_data_string: Value = serde_json::from_str(&agg_data_r)?;
-    //let resp_val = resp;
-    Ok(agg_data_r)
+    let streak_data: StreakData = StreakData {
+        users: Some(user_map),
+    };
+    println!("done.\n");
+
+    //let agg_data_r: String = serde_json::to_string_pretty(&data_val)?;
+    //let agg_data_struct: StreakData = serde_json::from_str(&(agg_data_r.clone()))?;
+
+    //println!("{:#?}",&agg_data_struct);
+
+    Ok(streak_data)
 }
 
 ///test if a streak is greater than, equal to,
