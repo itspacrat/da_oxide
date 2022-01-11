@@ -1,8 +1,8 @@
-use crate::*;
+//use crate::*;
 use reqwest::{header::HeaderMap, Response};
 use serde::{Deserialize, Serialize};
 use serde_json;
-use std::{collections::HashMap, error::Error};
+use std::{collections::HashMap, error::Error, path::Path};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct StreakData {
@@ -88,25 +88,37 @@ pub async fn fetch(users: &Vec<String>, client: Client) -> Result<StreakData, Bo
         let user_val: String = (user_val_r["site_streak"].clone()).to_string();
 
         user_map.insert(user.clone(), user_val.parse()?);
-        
     }
 
     let streak_data: StreakData = StreakData {
         users: Some(user_map),
     };
 
-    
     Ok(streak_data)
 }
 
-///test if a streak is greater than, equal to,
+/// test if a streak is greater than, equal to,
 /// or less than the previous streak.
-pub fn check(old_path: &str, new_data: &StreakData ) -> Result<(), Box<dyn std::error::Error>> {
-    // Read streak data file to string
-    let previous_r: &str = &(read_to_string(old_path)?);
+pub fn check(old_path: &str, new_data: &StreakData) -> Result<(), Box<dyn std::error::Error>> {
+    
+    if !Path::new(&old_path).exists() {
+        File::create(old_path)?;
+        let previous_r: &str = &(read_to_string(old_path)?); // > Value
+        let mut previous_h: HashMap<String, u16> = serde_json::from_str(previous_r)?;
+        println!("OLD\n{:#?}\n", &previous_h);
+        println!("NEW\n{:#?}\n", &new_data);
+        // if not, cry about nonexistent path
+        //println!("no old data to check against. did the fetch go through...?");
+    } else {
+        // Read streak data file to string
+        let previous_r: &str = &(read_to_string(old_path)?); // > Value
+        let mut previous_h: HashMap<String, u16> = serde_json::from_str(previous_r)?;
+        println!("OLD\n{:#?}\n", &previous_h);
+        println!("NEW\n{:#?}\n", &new_data);
 
-    // parse string as json val
-    let previous: Value = serde_json::from_str(previous_r)?;
+        //update_data()
+
+    };
 
     Ok(())
 }

@@ -1,67 +1,55 @@
+use duolingo_rs::*;
+use reqwest::Client;
+use serde_json::{to_value, Value};
 #[allow(unused_imports)]
 use std::{
-    //collections::HashMap, //hashmaps aren't real, they can't hurt you
-    fs::{read_to_string, File},
+    collections::HashMap,
+    fs::{read_to_string, write, File},
     io::prelude::*,
     path::Path,
 };
 
-use reqwest::{Client};
-//use serde::{Deserialize,Serialize};
-use serde_json::Value;
-
 pub mod config;
-pub mod discord;
-pub mod duo;
-use duo::{login,fetch,StreakData,check};
-//pub mod duo_data; //obsolete
-//use duo_data::{check, update}; //obsolete
+pub mod discord; use discord::*;
 
 /// MAIN. RUNS FIRST
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // define file paths
+    // define paths & endpoints
+    let login_endpoint: &str = "https://www.duolingo.com/login";
     let config_path: &str = "config.json";
     let streak_data_path: &str = "streak_data.json";
 
-    // define endpoints
-    let login_endpoint: &str = "https://www.duolingo.com/login";
-
+    //
     // check if config path exists, if not
     // cry about it
     if !Path::new(config_path).exists() {
-
-        println!("no data");
-
+        println!("no config to parse. so sad :(");
     } else {
+
+        //
         // login with stored details
         let my_config = config::get_config(config_path).await?;
-        let auth_client = login(&my_config.username, &my_config.password, &login_endpoint).await?;
+        let auth_client = login(my_config.username, my_config.password, &login_endpoint).await?;
 
-        // FETCH USERDATA 
+        //
+        // fetch userdata
         println!("fetching streak data...");
-        let streak_data: StreakData = fetch(
-            /*&my_config.username,*/
-            &my_config.users,
-            auth_client
-        ).await?;
+        let streak_data  = to_value(fetch(&my_config.users, auth_client).await?)?;
+        println!("done.\n");
 
-        //println!("{:?}", streak_data);
-        //let my_data_val: Value = serde_json::from_str(&my_data_r)?;
-
-        // check if streak data exists
-        if !Path::new(streak_data_path).exists() {
-
-            // if not, cry about nonexistent path
-            println!("no old data to check against. fetching new data...");
-
+        //
+        // check file path and create streak data
+        // with the new data if the file dosen't exist.
+        if Path::new(streak_data_path).exists() {
+            check(streak_data_path, streak_data)?;
+            // post()
         } else {
 
-            // if so, check the data in the file
-            //check(streak_data_path);
-        };
+            let mut streak_file = File::create(streak_data_path)?;
+            streak_file.write_all(streak_data.to_string().as_bytes())?;
 
-        //update();
+        }
     };
 
     Ok(())
