@@ -1,16 +1,19 @@
-use duolingo_rs::*;
-use reqwest::Client;
-use serde_json::{to_value, Value};
 #[allow(unused_imports)]
+use duolingo_rs::*;
+
+use reqwest::Client;
+use serde_json::{to_value};
 use std::{
-    collections::HashMap,
-    fs::{read_to_string, write, File},
+    fs::{File},
     io::prelude::*,
     path::Path,
 };
 
 pub mod config;
-pub mod discord; use discord::*;
+pub mod discord;
+//use discord::*;
+pub mod duo;
+use duo::{check};
 
 /// MAIN. RUNS FIRST
 #[tokio::main]
@@ -35,7 +38,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //
         // fetch userdata
         println!("fetching streak data...");
-        let streak_data  = to_value(fetch(&my_config.users, auth_client).await?)?;
+        let streak_data  = to_value(fetch_streak_map(my_config.users, auth_client).await?)?;
         println!("done.\n");
 
         //
@@ -45,11 +48,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             check(streak_data_path, streak_data)?;
             // post()
         } else {
-
             let mut streak_file = File::create(streak_data_path)?;
             streak_file.write_all(streak_data.to_string().as_bytes())?;
 
-        }
+        } 
     };
 
     Ok(())
