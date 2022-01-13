@@ -1,10 +1,10 @@
 ![duoAlertOxide icon](https://cdn.discordapp.com/attachments/722708774967574618/841409538594570250/g1527.svg.png)
 
 ## duoAlertOxide
-<br /><b>:x: This branch is currently borked! use at your own risk, as nothing currently works.</b><br /><br />
+<br />:heavy_check_mark:<b> This branch is currently working! use at your own risk, as certain features are rough around the edges.</b><br /><br />
 
 ### what is it?
-duoAlertOxide is a programatic, function-oriented re-implimentation and overhaul of [duoAlert](https://github.com/Seth-Johnson/duoAlert) by [Seth Johnson](https://github.com/Seth-Johnson), in [rust](https://github.com/rust-lang/rust).
+duoAlertOxide is a programatic, function-oriented re-implimentation and overhaul of [duoAlert](https://github.com/Seth-Johnson/duoAlert) by [Seth Johnson](https://github.com/Seth-Johnson), in [rust](https://github.com/rust-lang/rust) - built on [duolingo_rs](https://github.com/parkcitymedia/duolingo_rs)
 
 ### what does it do?
 duoAlertOxide uses discord webhooks to send a message when a followed user starts, extends, or fails to keep a streak, based on their daily goal.
@@ -45,6 +45,7 @@ place your `config.json` file in the directory the command is ran from, and popu
 
 ## do we have plans for cool stuff?
 ### planned features
+- batch posting
 - giphy integration
 - multi-hook support
 - argc- & argv-style input for custom paths and modularity
