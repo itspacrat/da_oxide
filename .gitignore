@@ -3,4 +3,21 @@ duoAlert.log
 config.json
 alert.pyc
 config.json.live
+config.json
 __pycache__/
+Cargo.lock
+.vscode
+alert.py
+#.vs
+
+# blake-isms // github.com/parkcitymedia/
+.vscode
+alert.py.scaffold
+storyboard.svg
+playground.rs
+alert-mod.py
+roadmap.txt
+/ignorethis
+
+# Added by cargo
+/target
