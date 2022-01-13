@@ -1,5 +1,11 @@
-use serde_json::{from_str, from_value, Value};
-use std::{collections::HashMap, error::Error, fs::read_to_string};
+use serde_json::{from_str, from_value, to_value, Value};
+use std::{collections::HashMap, error::Error, io::prelude::*, fs::{read_to_string,File}};
+
+fn update_previous(data: String, streak_data_path: &str) -> Result<(), Box<dyn Error>>{
+    let mut streak_file = File::create(streak_data_path)?;
+            streak_file.write_all(data.to_string().as_bytes())?;
+            Ok(())
+}
 
 /// test if a streak is greater than, equal to,
 /// or less than the previous streak.
@@ -90,9 +96,15 @@ pub fn check(old_path: &str, new_streak_json: Value)
             }
         }
     }
+
+    //
+    // update streak_data.json
+    update_previous(format!("{:?}",new_data), old_path)?;
+
+    //
     // INSERT RESPECTIVE MAPS INTO BIG MAP
     streak_post_map.insert(String::from("losses"),loss_map);
     streak_post_map.insert(String::from("extensions"), extension_map);
-
+    
     Ok(streak_post_map.clone())
 }
