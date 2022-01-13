@@ -1,6 +1,6 @@
 [package]
 name = "duo_alert_oxide"
-version = "0.6.0"
+version = "0.7.0"
 authors = ["parkcitymedia <blakemichaelgaynor@gmail.com>"]
 edition = "2018"
 
@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 
-duolingo_rs = { path = "../duolingo_rs" }
+duolingo_rs = { git = "https://github.com/parkcitymedia/duolingo_rs", branch="main"}
 
 # async dep
 tokio = { version = "1.0", features = ["full"] }
@@ -23,7 +23,3 @@ reqwest = {version = "0.11", features = ["json","cookies"]}
 
 # logging/datetime
 chrono = {version = "0.4"}
-
-[dev-dependencies]
-# replace the duo mod with
-# an external cargo dep
