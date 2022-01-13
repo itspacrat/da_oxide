@@ -27,7 +27,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // check if config path exists, if not
     // cry about it
     if !Path::new(config_path).exists() {
-        println!("no config to parse. so sad :(");
+        println!("no config to parse. so sad :( go make one (example at https://github.com/parkcitymedia/duo_alert_oxide)");
     } else {
 
         //
