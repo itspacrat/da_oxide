@@ -70,7 +70,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 } else if streak_type == loss_key {
                     for (streak_user, streak_length) in streak_map.to_owned() {
                         let current_sadness =
-                            format!("{}{} - {}", &sadness_body, &streak_user, &streak_length);
+                            format!("{}\\n*{} - {}*", &sadness_body, &streak_user, &streak_length);
                         println!("posting loss for {}", &streak_user);
                         println!("{}", &current_sadness);
                         post_discord(
