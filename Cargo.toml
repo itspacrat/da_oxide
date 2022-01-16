@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 
+# TODO: publish this badboy at some point
 duolingo_rs = { git = "https://github.com/parkcitymedia/duolingo_rs", branch="main"}
 
 # async dep
