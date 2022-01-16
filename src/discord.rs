@@ -1,5 +1,4 @@
 use std::{
-  collections::HashMap,
   error::Error,
 };
 use reqwest::header::HeaderMap;

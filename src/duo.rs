@@ -1,4 +1,4 @@
-use serde_json::{from_str, from_value, to_value, Value};
+use serde_json::{from_str, from_value, Value};
 use std::{collections::HashMap, error::Error, io::prelude::*, fs::{read_to_string,File}};
 
 fn update_previous(data: String, streak_data_path: &str) -> Result<(), Box<dyn Error>>{
