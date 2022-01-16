@@ -2,7 +2,7 @@ use duolingo_rs::*;
 
 use reqwest::Client;
 use serde_json::to_value;
-use std::{collections::HashMap, fs::File, io::prelude::*, path::Path};
+use std::{collections::HashMap, error::Error, fs::File, io::prelude::*, path::Path};
 
 pub mod config;
 pub mod discord;
@@ -12,7 +12,7 @@ use duo::check;
 
 /// MAIN. RUNS FIRST
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<(), Box<dyn Error>> {
     // define paths & endpoints
     let login_endpoint: &str = "https://www.duolingo.com/login";
     let config_path: &str = "config.json";
@@ -23,7 +23,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // define r_msg bodies
     let sadness_body = String::from("STREAK LOSS - LOSER ALERT: ");
     let extension_body = String::from("New day, one step further: ");
-
     let extension_key = String::from("extensions");
     let loss_key = String::from("losses");
     //
