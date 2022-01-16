@@ -56,9 +56,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 if streak_type == extension_key {
                     for (streak_user, streak_length) in streak_map.to_owned() {
                         println!("posting extension for {}", &streak_user);
-                        println!("{}{} - {}", &extension_body, &streak_user, &streak_length);
+                        println!(
+                            "{} *{}* - **{}**",
+                            &extension_body, &streak_user, &streak_length
+                        );
                         post_discord(
-                            format!("{}{} - {}", &extension_body, &streak_user, &streak_length),
+                            format!(
+                                "{}\\n*{}* - **{}**",
+                                &extension_body, &streak_user, &streak_length
+                            ),
                             &my_config.webhook_url,
                             extension_icon,
                             &mut Client::new(),
