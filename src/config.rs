@@ -1,10 +1,8 @@
 use {
     crate::*,
-    serde_json::{Value},
-    serde::{Deserialize,Serialize},
-    std::{
-        fs::{read_to_string}
-    }
+    serde::{Deserialize, Serialize},
+    serde_json::from_str,
+    std::{error::Error, fs::read_to_string},
 };
 
 // Holds the config data
@@ -12,31 +10,20 @@ use {
 pub struct Config {
     pub users: Vec<String>,
     pub webhook_url: String,
-    pub giphy_apikey: String,
-    pub giphy_rating: String,
+    //pub giphy_apikey: String,
+    //pub giphy_rating: String,
     pub username: String,
-    pub password: String
+    pub password: String,
+    //pub advanced_options: bool,
 }
 
 ///takes a `config.json` file and serializes it with serde_json
-pub async fn get_config(cfg_path: &str) -> Result<Config, Box<dyn std::error::Error>> {
-
+pub async fn get_config(cfg_path: &str) -> Result<Config, Box<dyn Error>> {
     if !Path::new(cfg_path).exists() {
         // cry about nonexistent path
-        println!("failed to retrieve config file from {}", String::from(cfg_path));
-        panic!()
-
+        panic!("could not find or open config file!")
     } else {
-        
-        // check the config data in the file
-        let config_r = read_to_string(cfg_path)
-        .expect("Something went wrong whilst reading the config file");
-
-        let config_r: &str = &(config_r.clone());
-        
-        let config: Config = serde_json::from_str(config_r)?;
-
+        let config: Config = from_str(&(read_to_string(cfg_path)?).clone())?;
         Ok(config)
-
     }
 }
