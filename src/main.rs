@@ -1,4 +1,3 @@
-#[allow(unused_imports)]
 use duolingo_rs::*;
 
 use reqwest::Client;
@@ -55,16 +54,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             for (streak_type, streak_map) in streaks {
                 if streak_type == extension_key {
                     for (streak_user, streak_length) in streak_map.to_owned() {
-                        println!("posting extension for {}", &streak_user);
-                        println!(
-                            "{} *{}* - **{}**",
+                        let current_extension = format!(
+                            "{}\\n*{}* - **{}**",
                             &extension_body, &streak_user, &streak_length
                         );
+                        println!("posting extension for {}", &streak_user);
+                        println!("{} ", &current_extension);
                         post_discord(
-                            format!(
-                                "{}\\n*{}* - **{}**",
-                                &extension_body, &streak_user, &streak_length
-                            ),
+                            current_extension,
                             &my_config.webhook_url,
                             extension_icon,
                             &mut Client::new(),
@@ -73,10 +70,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 } else if streak_type == loss_key {
                     for (streak_user, streak_length) in streak_map.to_owned() {
+                        let current_sadness =
+                            format!("{}{} - {}", &sadness_body, &streak_user, &streak_length);
                         println!("posting loss for {}", &streak_user);
-                        println!("{}{} - {}", &sadness_body, &streak_user, &streak_length);
+                        println!("{}", &current_sadness);
                         post_discord(
-                            format!("{}{} - {}", &sadness_body, &streak_user, &streak_length),
+                            current_sadness,
                             &my_config.webhook_url,
                             sadness_icon,
                             &mut Client::new(),
