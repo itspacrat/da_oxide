@@ -19,17 +19,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let streak_data_path: &str = "streak_data.json";
     let extension_icon = "https://cdn.discordapp.com/attachments/722708774967574618/841396425429352488/68747470733a2f2f692e696d6775722e636f6d2f68534c30784b502e706e67-NEW-icon.png";
     let sadness_icon = "https://media.discordapp.net/attachments/722708774967574618/911016021593305128/68747470733a2f2f692e696d6775722e636f6d2f68534c30784b502e706e67-NEW-icon-INVERT.png";
+
     //
     // define r_msg bodies
-    let sadness_body = String::from("STREAK LOSS - LOSER ALERT: ");
-    let extension_body = String::from("New day, one step further: ");
+    let sadness_body = String::from("**STREAK LOSS - LOSER ALERT:**\\n");
+    let extension_body = String::from("New day, one step further:\\n");
+
+    //
+    // define strings to check userdata against
     let extension_key = String::from("extensions");
     let loss_key = String::from("losses");
+    let _restart_key = String::from("restarts");
+
     //
-    // check if config path exists, if not
-    // cry about it
+    // check if config path exists, if not, cry about it
     if !Path::new(config_path).exists() {
-        println!("no config to parse. so sad :( go make one (example at https://github.com/parkcitymedia/duo_alert_oxide)");
+        println!("no config to parse. so sad :( go make one (example at https://github.com/parkcitymedia/duoalert_oxide#how-do-i-configure-this)");
     } else {
         //
         // login with stored details
@@ -69,8 +74,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     }
                 } else if streak_type == loss_key {
                     for (streak_user, streak_length) in streak_map.to_owned() {
-                        let current_sadness =
-                            format!("{}\\n*{} - {}*", &sadness_body, &streak_user, &streak_length);
+                        let current_sadness = format!(
+                            "{}\\n*{} - {}*",
+                            &sadness_body, &streak_user, &streak_length
+                        );
                         println!("posting loss for {}", &streak_user);
                         println!("{}", &current_sadness);
                         post_discord(
