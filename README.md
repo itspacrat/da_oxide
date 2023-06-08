@@ -1,7 +1,7 @@
 ![duoAlertOxide icon](https://cdn.discordapp.com/attachments/722708774967574618/841409538594570250/g1527.svg.png)
 
 ## duoAlertOxide
-<br />:heavy_check_mark:<b> This branch is currently working! use at your own risk, as certain features are rough around the edges.</b><br /><br />
+<br /><b> This project is currently on hiatus, due to recent changes in the duolingo fetch api. this branch should no longer run as expected.</b><br /><br />
 
 ### what is it?
 duoAlertOxide is a programatic, function-oriented re-implimentation and overhaul of [duoAlert](https://github.com/Seth-Johnson/duoAlert) by [Seth Johnson](https://github.com/Seth-Johnson), in [rust](https://github.com/rust-lang/rust) - built on [duolingo_rs](https://github.com/parkcitymedia/duolingo_rs)
